@@ -511,324 +511,291 @@ For Python's `dict` implementation (which uses a hash table):
 - **Deletion**: Average `O(1)`, Worst case `O(n)`
 
 The `O(n)` worst-case scenarios are rare in practice with good hash functions. For most practical purposes, dictionary operations are considered `O(1)`.
-Heaps / Priority Queues 
-(1 / 7)
 
-Heap Push
-Heaps (or priority queues) are a data structure that allow you to insert (push) and remove (pop) elements based on some priority associated with each element. In Python, a heap is a minimum heap by default, meaning that the element with the smallest priority is always at the top of the heap.
+## Python Heaps (Priority Queues) with `heapq`
 
+Heaps are a specialized tree-based data structure that satisfy the heap property. In Python, the `heapq` module provides an implementation of the heap queue algorithm, also known as the priority queue algorithm. Heaps are binary trees for which every parent node has a value less than or equal to any of its children (min-heap). Python's `heapq` module implements a min-heap, meaning the smallest element is always at the root (`heap[0]`).
+
+Heaps are implemented as Python lists, but it's crucial to use only the functions from the `heapq` module to maintain the heap property.
+
+```python
 import heapq
+```
 
-heap = [] # min heap
+### Core Heap Operations
 
-heapq.heappush(heap, 3)
-heapq.heappush(heap, 1)
+#### 1. Pushing Elements: `heapq.heappush(heap, item)`
 
-print(heap[0])  # 1
+Adds `item` to the `heap`, maintaining the heap invariant.
 
-heapq.heappush(heap, 0)
-
-print(heap[0])  # 0
-We first imported the heapq module, which contains functions for working with heaps.
-We created an empty list called heap. Heaps are implemented as lists in Python.
-We pushed the elements 3 and 1 onto the heap.
-We accessed the element with the smallest priority, which is 1. The element with the smallest priority is always at index 0. This is the same as calling .top() in other languages.
-We pushed the element 0 onto the heap.
-We accessed the element with the smallest priority, which is now 0.
-Challenge
-Implement the function heap_push(heap: List[int], value: int) -> int that pushes the integer value onto the heap heap. The heap should be a min heap, meaning that the element with the smallest priority should be at index 0. After pushing the element, return the element with the smallest priority.
-
-Time and Space Complexity
-The time complexity of heapq.heappush() is 
-O
-(
-l
-o
-g
-(
-n
-)
-)
-O(log(n)) where 
-n
-n is the number of elements in the heap.
-The time complexity of accessing the element with the smallest priority is 
-O
-(
-1
-)
-O(1), since indexing into a list is 
-O
-(
-1
-)
-O(1).
-The space complexity of a heap is 
-O
-(
-n
-)
-O(n), where 
-n
-n is the number of elements in the heap.
-
-
-Heaps / Priority Queues 
-(2 / 7)
-
-Heap Pop
-Solved 
-We can also remove elements from a heap using the heapq.heappop() function. This function removes the element with the smallest priority from the heap and returns it.
-
-import heapq
-
+```python
 heap = []
+heapq.heappush(heap, 30) # heap is now [30]
+heapq.heappush(heap, 10) # heap is now [10, 30]
+heapq.heappush(heap, 20) # heap is now [10, 30, 20] (internal list representation)
+heapq.heappush(heap, 5)  # heap is now [5, 10, 20, 30]
+print(heap) # Output: [5, 10, 20, 30] (actual internal order might vary but heap[0] is smallest)
+```
 
-heapq.heappush(heap, "banana")
-heapq.heappush(heap, "apple")
-heapq.heappush(heap, "kiwi")
+- **Time Complexity**: `O(log n)`, where `n` is the number of elements in the heap.
+- **Space Complexity**: `O(1)` for the operation itself (heap storage is `O(n)`).
 
-print(heapq.heappop(heap))  # apple
-print(heapq.heappop(heap))  # banana
-print(heapq.heappop(heap))  # kiwi
-We pushed the strings "banana", "apple", and "kiwi" onto the heap.
-We popped the element with the smallest priority, which is "apple". By default, the priority of strings is determined by their lexicographical order, with smaller lexicographical strings having higher priority.
-We popped the next element with the smallest priority, which is now "banana".
-We popped the last element with the smallest priority, which is now "kiwi".
-The heap is now empty. If we try to pop an element from an empty heap, we will get an IndexError.
-Challenge
-Implement the following function heap_pop(heap: List[int]) -> List[int] that pops all elements from the heap heap and returns them in a list in the order that they were popped. The heap should be a min heap, meaning that the elements with the smallest priority should be popped first.
+**Use Case (Challenge: Heap Push):**
+Implement a function that pushes a value onto a min-heap and returns the smallest element.
 
-Time and Space Complexity
-The time complexity of heapq.heappop() is 
-O
-(
-l
-o
-g
-(
-n
-)
-)
-O(log(n)) where 
-n
-n is the number of elements in the heap.
+```python
+def heap_push_and_get_min(heap: list, value: int) -> int:
+    heapq.heappush(heap, value)
+    return heap[0] # Smallest element is always at index 0
 
+my_heap = [10, 20]
+heapq.heapify(my_heap) # Ensure it's a valid heap first if starting with existing list
+min_val = heap_push_and_get_min(my_heap, 5)
+print(f"Heap after push: {my_heap}, Min value: {min_val}") # Heap: [5, 20, 10], Min: 5
+```
 
-Heaps / Priority Queues 
-(3 / 7)
+#### 2. Popping Elements: `heapq.heappop(heap)`
 
-Heapify
-If we are given a list of elements up front, we can convert them into a heap using the heapq.heapify() function. This function rearranges the elements in the list so that they form a valid heap. The heap is a min heap by default, meaning that the element with the smallest priority is at index 0.
+Pops and returns the smallest item from the `heap`, maintaining the heap invariant. Raises `IndexError` if the heap is empty.
 
-import heapq
+```python
+heap = [5, 10, 20, 30] # Assume this is a valid heap
+heapq.heapify(heap) # Or ensure it's heapified
 
-heap = [4, 2, 5, 3, 1]
+smallest = heapq.heappop(heap) # smallest is 5, heap is now [10, 30, 20]
+print(f"Popped: {smallest}, Heap after pop: {heap}")
 
-heapq.heapify(heap)
+next_smallest = heapq.heappop(heap) # next_smallest is 10, heap is now [20, 30]
+print(f"Popped: {next_smallest}, Heap after pop: {heap}")
+```
 
-while heap:
-    print(heapq.heappop(heap))
-The output of this code will be:
+- **Time Complexity**: `O(log n)`.
+- **Space Complexity**: `O(1)`.
 
-1
-2
-3
-4
-5
-We transformed the original list [4, 2, 5, 3, 1] into a heap using heapq.heapify(). We then popped all the elements from the heap in order of their priority.
+**Use Case (Challenge: Heap Pop):**
+Implement a function that pops all elements from a min-heap and returns them in the order they were popped (ascending order).
 
-Challenge
-Implement the following functions:
+```python
+def pop_all_from_heap(heap: list) -> list:
+    popped_elements = []
+    # Ensure the input list is a heap if it's not already
+    # If it's guaranteed to be a heap, heapify might not be needed here
+    # but it's safer if the source is an arbitrary list.
+    # heapq.heapify(heap) # Uncomment if 'heap' might not be a heap initially
+    while heap:
+        popped_elements.append(heapq.heappop(heap))
+    return popped_elements
 
-heapify_strings(strings: List[str]) -> List[str] that takes a list of strings and returns a list of strings that have been transformed into a min heap.
-heapify_integers(integers: List[int]) -> List[int] that takes a list of integers and returns a list of integers that have been transformed into a min heap.
-heap_sort(nums: List[int]) -> List[int] that takes a list of integers and returns a list of integers that have been sorted in ascending order. You should use the heapify function to transform the list into a heap before sorting it.
-Time and Space Complexity
-The time complexity of heapq.heapify() is 
-O
-(
-n
-)
-O(n) where 
-n
-n is the number of elements in the heap. This means it's more efficient than pushing elements onto the heap one by one, which would take 
-O
-(
-n
-l
-o
-g
-(
-n
-)
-)
-O(nlog(n)) time.
+data_to_heap = [40, 10, 50, 20, 30]
+heapq.heapify(data_to_heap) # Make it a heap first
+sorted_data = pop_all_from_heap(data_to_heap) # data_to_heap will be empty
+print(f"Sorted data by popping: {sorted_data}") # [10, 20, 30, 40, 50]
+```
 
-Heaps / Priority Queues 
-(4 / 7)
+#### 3. Accessing the Smallest Element (Peeking)
 
-Max Heap
-Solved 
-Unfortunately, Python does not have a built-in max heap implementation. However, we can simulate a max heap by negating the values we insert into the heap. This way, the element with the largest priority (the smallest value) will be at the top of the heap.
+The smallest element of a min-heap is always at index 0.
 
-Suppose we had a set of numbers [4, 2, 3, 5]. We can insert these numbers into a max heap by negating them and inserting them into a min heap. The negated numbers would be [-4, -2, -3, -5]. When we pop elements from the min heap, we would negate them again to get the original numbers.
+```python
+heap = [5, 10, 20] # Assume valid heap
+smallest_element = heap[0] # 5
+```
 
-import heapq
+- **Time Complexity**: `O(1)`.
 
-nums = [4, 2, 3, 5]
+### Building a Heap
+
+#### `heapq.heapify(x)`
+
+Transforms list `x` into a heap, in-place, in linear time.
+
+```python
+my_list = [4, 2, 5, 3, 1, 9, 6]
+heapq.heapify(my_list)
+print(f"Heapified list: {my_list}") # e.g., [1, 2, 5, 3, 4, 9, 6] (heap[0] is smallest)
+# The exact internal order can vary but it satisfies the heap property.
+```
+
+- **Time Complexity**: `O(n)`, where `n` is the number of elements in the list. This is more efficient than pushing elements one by one (`O(n log n)`).
+- **Space Complexity**: `O(1)` (in-place).
+
+**Use Cases (Challenge: Heapify):**
+
+1.  **Heapify Strings:**
+
+    ```python
+    def heapify_strings(strings: list[str]) -> list[str]:
+        heapq.heapify(strings)
+        return strings
+
+    str_list = ["banana", "apple", "kiwi", "date"]
+    heapified_str_list = heapify_strings(str_list)
+    print(f"Heapified strings: {heapified_str_list}") # e.g., ['apple', 'banana', 'kiwi', 'date']
+    ```
+
+2.  **Heapify Integers:** (Same as the general example above)
+    ```python
+    def heapify_integers(integers: list[int]) -> list[int]:
+        heapq.heapify(integers)
+        return integers
+    ```
+3.  **Heap Sort:**
+    A common application of heaps is heap sort.
+
+    ```python
+    def heap_sort(nums: list[int]) -> list[int]:
+        heapq.heapify(nums) # Transform list into a min-heap
+        sorted_list = []
+        while nums:
+            sorted_list.append(heapq.heappop(nums)) # Repeatedly pop the smallest element
+        return sorted_list
+
+    unsorted_nums = [4, 2, 5, 3, 1, 9, 6]
+    sorted_nums = heap_sort(unsorted_nums)
+    print(f"Heap sorted numbers: {sorted_nums}") # [1, 2, 3, 4, 5, 6, 9]
+    ```
+
+### Advanced Heap Techniques
+
+#### 1. Simulating a Max-Heap
+
+Python's `heapq` only provides a min-heap. To simulate a max-heap, store negated values (for numbers) or use custom objects/tuples where the comparison logic is inverted. For numbers, negate them when pushing and negate again when popping.
+
+```python
+nums = [4, 2, 3, 5, 1]
 max_heap = []
-
 for num in nums:
-    heapq.heappush(max_heap, -num) # Negate the number
+    heapq.heappush(max_heap, -num) # Push negated value
 
+print("Max-heap elements (popped and re-negated):")
 while max_heap:
-    top = -heapq.heappop(max_heap) # Negate the number back
-    print(top)
-The output of this code will be:
+    largest = -heapq.heappop(max_heap) # Pop and negate back
+    print(largest, end=" ") # Output: 5 4 3 2 1
+print()
+```
 
-5
-4
-3
-2
-We negated the numbers and pushed them onto the heap, which is technically implemented as a min heap.
-This way the largest original number, 5, will be at the top of the heap after negation.
-We popped the elements from the heap and negated them back to get the original numbers.
-The popped values were -5, -4, -3, -2 before we negated them back to 5, 4, 3, 2.
-Challenge
-Implement the function get_reverse_sorted(nums: List[int]) -> List[int] which takes a list of integers and returns the integers in reverse sorted order. You should use the max heap technique described above to achieve this. The list of integers given is not necessarily a heap.
+**Use Case (Challenge: Max Heap - Get Reverse Sorted):**
 
+```python
+def get_reverse_sorted(nums: list[int]) -> list[int]:
+    max_heap_sim = []
+    for num in nums:
+        heapq.heappush(max_heap_sim, -num)
 
-Heaps / Priority Queues 
-(5 / 7)
+    reverse_sorted_list = []
+    while max_heap_sim:
+        reverse_sorted_list.append(-heapq.heappop(max_heap_sim))
+    return reverse_sorted_list
 
-Custom Heap
-Unfortunately, Python does not have a custom key parameter for the heapq module. This means that we cannot directly create a heap with custom priorities. However, we can simulate a custom heap by using a tuple as the element in the heap.
+numbers = [4, 2, 3, 5, 1, 9]
+print(f"Reverse sorted: {get_reverse_sorted(numbers)}") # [9, 5, 4, 3, 2, 1]
+```
 
-With tuples, Python will use the first element of the tuple as the priority. If two tuples have the same first element, Python will compare the second element of the tuples, and so on.
+#### 2. Heaps with Custom Priorities (Tuples)
 
-If we wanted to create a heap of integers by using the absolute value of each integer as the priority, we could use the following code:
+If you need to prioritize based on a custom key or store complex objects, use tuples `(priority, item)` or custom objects that implement rich comparison methods. Python's heap compares tuples element by element.
 
-import heapq
+```python
+# Example: Min-heap of (priority, task_name)
+tasks = []
+heapq.heappush(tasks, (5, "Write code"))
+heapq.heappush(tasks, (1, "Fix critical bug"))
+heapq.heappush(tasks, (3, "Attend meeting"))
 
-nums = [4, -2, 3, -5]
-heap = []
+print("Tasks by priority (popped):")
+while tasks:
+    priority, task_name = heapq.heappop(tasks)
+    print(f"Priority: {priority}, Task: {task_name}")
+# Output:
+# Priority: 1, Task: Fix critical bug
+# Priority: 3, Task: Attend meeting
+# Priority: 5, Task: Write code
+```
 
-for num in nums:
-    pair = (abs(num), num)
-    heapq.heappush(heap, pair)
+**Use Case (Challenge: Custom Heap - Absolute Value Priority):**
+Sort numbers based on their absolute value (smallest absolute value first), then by their original value if absolute values are tied.
 
-while heap:
-    pair = heapq.heappop(heap)
-    original_num = pair[1]
-    print(original_num)
-The output of this code will be:
+```python
+nums_custom = [4, -2, 3, -5, 2] # -2 and 2 have same abs value
+custom_heap = []
+for num in nums_custom:
+    # (abs_value, original_value) for tie-breaking
+    heapq.heappush(custom_heap, (abs(num), num))
 
--2
-3
-4
--5
-We pushed tuples onto the heap where the first element was the absolute value of the number and the second element was the original number. [(4, 4), (2, -2), (3, 3), (5, -5)].
-The heap was a min heap based on the first element of each tuple.
-We popped the tuples and printed the second element from each, which was the original number.
+print("Sorted by absolute value (then original value):")
+while custom_heap:
+    abs_val, original_num = heapq.heappop(custom_heap)
+    print(original_num, end=" ") # Output: -2 2 3 4 -5 (or similar based on tie-breaking)
+print()
+```
 
-Heaps / Priority Queues 
-(6 / 7)
+### Utility Functions for N Smallest/Largest
 
-Heap N Smallest
-Solved 
-Heaps provide a very convenient way to find the smallest elements in a collection. For this we can use heapq.nsmallest():
+#### 1. `heapq.nsmallest(n, iterable, key=None)`
 
-import heapq
+Returns a list with the `n` smallest items from `iterable`. If `key` is provided, it's a function of one argument that is used to extract a comparison key from each element in iterable.
 
+```python
 my_array = [1, 6, 3, 5, 7, 9, 8, 10, 2, 12]
+print(f"3 smallest: {heapq.nsmallest(3, my_array)}")  # [1, 2, 3]
+print(f"5 smallest: {heapq.nsmallest(5, my_array)}")  # [1, 2, 3, 5, 6]
 
-heapq.nsmallest(3, my_array)  # returns [1, 2, 3]
-heapq.nsmallest(5, my_array)  # returns [1, 2, 3, 5, 6]
-heapq.nsmallest(1, my_array)  # returns [1]
-We initialized an unsorted array my_array with some integers.
-We called heapq.nsmallest(3, my_array). This returns the 3 smallest elements in my_array. The elements are returned in sorted order.
-We also called heapq.nsmallest(5, my_array) which returns the 5 smallest elements in my_array.
-We also called heapq.nsmallest(1, my_array) which returns the smallest element in my_array.
-Challenge
-Implement the following functions using heapq.nsmallest():
+# With a key
+data_dicts = [{'name': 'A', 'val': 10}, {'name': 'B', 'val': 5}, {'name': 'C', 'val': 15}]
+print(f"2 smallest by 'val': {heapq.nsmallest(2, data_dicts, key=lambda x: x['val'])}")
+# Output: [{'name': 'B', 'val': 5}, {'name': 'A', 'val': 10}]
+```
 
-get_min_element(arr: List[int]) -> int that returns the smallest element in the list arr.
-get_min_4_elements(arr: List[int]) -> List[int] that returns the 4 smallest elements in the list arr in increasing order.
-get_min_2_elements(arr: List[int]) -> List[int] that returns the 2 smallest elements in the list arr in decreasing order.
-Note: Assume all input arrays are unsorted and contain enough elements to return the required number of elements.
+- **Time Complexity**: `O(m log n)` where `m` is the size of the iterable and `n` is the number of items to find. If `n` is 1, it's `O(m)`. If `n` is close to `m`, it's closer to `O(m log m)`.
 
-Time and Space Complexity
-The time complexity of heapq.nsmallest() is 
-O
-(
-m
-l
-o
-g
-(
-n
-)
-)
-O(mlog(n)) where 
-n
-n is the number of elements to return and 
-m
-m is the size of the input.
-One way to implement nsmallest() is to iterate over the input and push each element onto a heap. We ensure the size of the heap is at most 
-n
-n by popping the largest element if the heap size exceeds 
-n
-n. Thus, we will use a max heap.
+**Use Cases (Challenge: Heap N Smallest):**
 
+```python
+def get_min_element(arr: list[int]) -> int:
+    return heapq.nsmallest(1, arr)[0]
 
-Heaps / Priority Queues 
-(7 / 7)
+def get_min_4_elements_increasing(arr: list[int]) -> list[int]:
+    return heapq.nsmallest(4, arr) # nsmallest returns them sorted
 
-Heap N Largest
-Solved 
-We also have heapq.nlargest() to get the n largest elements in a collection.
+def get_min_2_elements_decreasing(arr: list[int]) -> list[int]:
+    two_smallest = heapq.nsmallest(2, arr)
+    return sorted(two_smallest, reverse=True) # nsmallest sorts ascending, so re-sort
 
-import heapq
+test_arr = [10, 1, 30, 2, 40, 5]
+print(f"Min element: {get_min_element(test_arr)}") # 1
+print(f"Min 4 increasing: {get_min_4_elements_increasing(test_arr)}") # [1, 2, 5, 10]
+print(f"Min 2 decreasing: {get_min_2_elements_decreasing(test_arr)}") # [2, 1]
+```
 
+#### 2. `heapq.nlargest(n, iterable, key=None)`
+
+Returns a list with the `n` largest items from `iterable`. Similar to `nsmallest` in behavior and complexity.
+
+```python
 my_array = [1, 6, 3, 5, 7, 9, 8, 10, 2, 12]
+print(f"3 largest: {heapq.nlargest(3, my_array)}")  # [12, 10, 9]
+print(f"5 largest: {heapq.nlargest(5, my_array)}")  # [12, 10, 9, 8, 7]
+```
 
-heapq.nlargest(3, my_array)  # returns [12, 10, 9]
-heapq.nlargest(5, my_array)  # returns [12, 10, 9, 8, 7]
-heapq.nlargest(1, my_array)  # returns [12]
-We initialized an unsorted array my_array with some integers.
-We called heapq.nlargest(3, my_array). This returns the 3 largest elements in my_array. The elements are returned in decreasing order.
-We also called heapq.nlargest(5, my_array) which returns the 5 largest elements in my_array in decreasing order.
-We also called heapq.nlargest(1, my_array) which returns the largest element in my_array.
-Challenge
-Implement the following functions using heapq.nlargest():
+- **Time Complexity**: `O(m log n)`.
 
-get_max_element(arr: List[int]) -> int that returns the largest element in the list arr.
-get_max_4_elements(arr: List[int]) -> List[int] that returns the 4 largest elements in the list arr in decreasing order.
-get_max_2_elements(arr: List[int]) -> List[int] that returns the 2 largest elements in the list arr in increasing order.
-Note: Assume all input arrays are unsorted and contain enough elements to return the required number of elements.
+**Use Cases (Challenge: Heap N Largest):**
 
-Time and Space Complexity
-The time complexity of heapq.nlargest() is 
-O
-(
-m
-l
-o
-g
-(
-n
-)
-)
-O(mlog(n)) where 
-n
-n is the number of elements to return and 
-m
-m is the size of the input.
-One way to implement nlargest() is to iterate over the input and push each element onto a heap. We ensure the size of the heap is at most 
-n
-n by popping the smallest element if the heap size exceeds 
-n
-n. Thus, we will use a min heap.
+```python
+def get_max_element(arr: list[int]) -> int:
+    return heapq.nlargest(1, arr)[0]
 
+def get_max_4_elements_decreasing(arr: list[int]) -> list[int]:
+    return heapq.nlargest(4, arr) # nlargest returns them sorted descending
 
+def get_max_2_elements_increasing(arr: list[int]) -> list[int]:
+    two_largest = heapq.nlargest(2, arr)
+    return sorted(two_largest) # nlargest sorts descending, so re-sort
+
+test_arr = [10, 1, 30, 2, 40, 5]
+print(f"Max element: {get_max_element(test_arr)}") # 40
+print(f"Max 4 decreasing: {get_max_4_elements_decreasing(test_arr)}") # [40, 30, 10, 5]
+print(f"Max 2 increasing: {get_max_2_elements_increasing(test_arr)}") # [30, 40]
+```
+
+This concludes the refined section on Python Heaps / Priority Queues.
