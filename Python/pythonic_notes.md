@@ -278,84 +278,236 @@ Python also supports comprehensions for other data types:
 
 This concludes the refined section on Python lists.
 
+## Python Dictionaries (Hashmaps): Key-Value Powerhouses
 
+Dictionaries, often called hashmaps in other languages, are fundamental data structures in Python. They store data as collections of key-value pairs. Each key must be unique and immutable (e.g., strings, numbers, tuples), while values can be of any data type and can be duplicated. Dictionaries are unordered in Python versions before 3.7, but are insertion-ordered by default from Python 3.7 onwards.
 
-# Hashmaps or Dictionaries in Python
-Hash Map Basics
-Behind lists, hash maps are the most commonly used data structure in Python. A hash map is a collection of key-value pairs. Each key is unique, and it maps to a specific value. Keys may be of any immutable type, such as integers, strings, or as we will see later, tuples.
+### Creating Dictionaries
 
-In Python, hash maps are implemented using the dict class. The common operations on a hash map include:
+```python
+# Empty dictionary
+empty_dict = {}
+empty_dict_alt = dict()
 
-Insertion: Insert a key-value pair into the hash map.
+# Dictionary with initial key-value pairs
+my_dict = {
+    "name": "Alice",
+    "age": 30,
+    "city": "New York"
+}
 
-my_dict = {}
+# Creating a dictionary using the dict() constructor
+# From a list of key-value tuples
+dict_from_tuples = dict([('a', 1), ('b', 2), ('c', 3)]) # {'a': 1, 'b': 2, 'c': 3}
 
-my_dict['a'] = 1 # {'a': 1}
-Access: Access the value associated with a key.
+# From keyword arguments (keys must be valid identifiers)
+dict_from_kwargs = dict(name="Bob", age=25) # {'name': 'Bob', 'age': 25}
 
-my_dict = {'a': 1}
+# Using zip to combine keys and values lists
+keys = ['fruit', 'color', 'quantity']
+values = ['apple', 'red', 5]
+dict_from_zip = dict(zip(keys, values)) # {'fruit': 'apple', 'color': 'red', 'quantity': 5}
+```
 
-print(my_dict['a']) # 1
-Deletion: Delete a key-value pair from the hash map.
+### Accessing Values
 
-my_dict = {'a': 1, 'b': 2}
+Values are accessed using their corresponding keys.
 
-del my_dict['a'] # {}
+```python
+my_dict = {"name": "Alice", "age": 30}
 
-my_dict.pop('b') # {}
+# Using square bracket notation
+name = my_dict["name"]  # Alice
+# If key doesn't exist, it raises a KeyError
+# city = my_dict["city"] # Raises KeyError
 
-my_dict.pop('c') # KeyError: 'c'
+# Using the get() method
+age = my_dict.get("age")      # 30
+city = my_dict.get("city")    # None (returns None if key is not found)
+country = my_dict.get("country", "Unknown") # Unknown (returns default value if key not found)
+```
 
-my_dict.pop('c', 'default') # No error, returns 'default'
-As shown above, there are two ways to delete a key-value pair from a hash map: using the del keyword or the pop() method. The only difference is that the pop() method returns the value associated with the key.
-If the key does not exist, both pop() and del will raise a KeyError. To avoid this, you can pass a default value to the pop() method, which will be returned if the key does not exist.
+Using `get()` is often safer as it avoids `KeyError` exceptions for missing keys.
 
-Lookup: Check if a key exists in the hash map.
+### Adding and Updating Key-Value Pairs
 
-my_dict = {'a': 1}
+```python
+my_dict = {"name": "Alice"}
 
-does_a_exist = 'a' in my_dict # True
-does_b_exist = 'b' in my_dict # False
-For lookup operations, you can also use the in operator, similar to how you would check if an element is in a list.
+# Adding a new key-value pair
+my_dict["age"] = 30            # my_dict is now {'name': 'Alice', 'age': 30}
 
-Challenge
-Implement the following functions:
+# Updating an existing key's value
+my_dict["name"] = "Alicia"     # my_dict is now {'name': 'Alicia', 'age': 30}
 
-build_hash_map(keys: List[str], values: List[int]) -> Dict[str, int]. It takes two lists, keys and values, and returns a hash map where the keys are the elements of the keys list and the values are the elements of the values list.
-This may be a good opportunity to use the zip() function in Python.
-get_values(hash_map: Dict[str, int], keys: List[str]) -> List[int]. It takes a hash map and a list of keys and returns a list of the values associated with those keys.
-You may assume that all keys in the list exist in the hashmap
-The order of the values in the output list should match the order of the keys in the input list.
-Hint: If you don't recall how to loop through a dictionary, check out the Dict Looping lesson from the Python for Beginners course.
+# Using the update() method
+# Can add multiple pairs or update existing ones
+my_dict.update({"city": "London", "age": 31})
+# my_dict is now {'name': 'Alicia', 'age': 31, 'city': 'London'}
 
-Time Complexity
-Insertion: 
-O
-(
-1
-)
-O(1)
-Access: 
-O
-(
-1
-)
-O(1)
-Deletion: 
-O
-(
-1
-)
-O(1)
-Lookup: 
-O
-(
-1
-)
-O(1)
-The above time complexities are technically for the average case, but in most cases it's safe to assume that these hash map operations are 
-O
-(
-1
-)
-O(1).
+# update() can also take another dictionary or an iterable of key-value pairs
+another_dict = {"occupation": "Engineer"}
+my_dict.update(another_dict)
+# my_dict is now {'name': 'Alicia', 'age': 31, 'city': 'London', 'occupation': 'Engineer'}
+```
+
+### Removing Key-Value Pairs
+
+```python
+my_dict = {"name": "Alice", "age": 30, "city": "New York"}
+
+# Using the del keyword
+del my_dict["city"]
+# my_dict is now {'name': 'Alice', 'age': 30}
+# del my_dict["country"] # Raises KeyError if key doesn't exist
+
+# Using the pop() method
+# Removes the key and returns its value
+age = my_dict.pop("age") # age is 30, my_dict is now {'name': 'Alice'}
+# city = my_dict.pop("city") # Raises KeyError if key doesn't exist
+
+# pop() with a default value to avoid KeyError
+country = my_dict.pop("country", "Not Found") # country is "Not Found", my_dict is unchanged if "country" wasn't there
+
+# Using popitem()
+# Removes and returns an arbitrary (key, value) pair (LIFO since Python 3.7)
+# Useful for iterating through and consuming dictionary items
+my_dict = {"a": 1, "b": 2, "c": 3}
+item = my_dict.popitem() # item might be ('c', 3), my_dict is now {'a': 1, 'b': 2}
+
+# Using clear()
+# Removes all items from the dictionary
+my_dict.clear() # my_dict is now {}
+```
+
+### Checking for Key Existence (Lookup)
+
+```python
+my_dict = {"name": "Alice", "age": 30}
+
+# Using the 'in' operator (preferred)
+is_name_present = "name" in my_dict  # True
+is_city_present = "city" in my_dict  # False
+
+# Using 'not in'
+is_country_absent = "country" not in my_dict # True
+```
+
+### Iterating Through Dictionaries
+
+```python
+my_dict = {"name": "Alice", "age": 30, "city": "New York"}
+
+# Iterating over keys (default iteration behavior)
+print("Keys:")
+for key in my_dict:
+    print(key) # name, age, city
+
+# Iterating over keys explicitly
+print("\nKeys explicitly:")
+for key in my_dict.keys():
+    print(key) # name, age, city
+
+# Iterating over values
+print("\nValues:")
+for value in my_dict.values():
+    print(value) # Alice, 30, New York
+
+# Iterating over key-value pairs (items)
+print("\nKey-Value pairs:")
+for key, value in my_dict.items():
+    print(f"{key}: {value}") # name: Alice, age: 30, city: New York
+```
+
+### Common Dictionary Methods Overview
+
+- `clear()`: Removes all items.
+- `copy()`: Returns a shallow copy of the dictionary.
+- `fromkeys(seq[, value])`: Creates a new dictionary with keys from `seq` and values set to `value` (defaults to `None`).
+  ```python
+  keys = ['a', 'b', 'c']
+  new_dict = dict.fromkeys(keys, 0) # {'a': 0, 'b': 0, 'c': 0}
+  ```
+- `get(key[, default])`: Returns the value for `key` if `key` is in the dictionary, else `default`.
+- `items()`: Returns a view object that displays a list of a dictionary's key-value tuple pairs.
+- `keys()`: Returns a view object that displays a list of all the keys.
+- `pop(key[, default])`: Removes `key` and returns its value. If `key` is not found, `default` is returned if given, otherwise `KeyError` is raised.
+- `popitem()`: Removes and returns an arbitrary (key, value) pair.
+- `setdefault(key[, default])`: If `key` is in the dictionary, returns its value. If not, inserts `key` with a value of `default` and returns `default` (defaults to `None`).
+  ```python
+  my_dict = {'a': 1}
+  value_a = my_dict.setdefault('a', 0) # value_a is 1, my_dict is {'a': 1}
+  value_b = my_dict.setdefault('b', 0) # value_b is 0, my_dict is {'a': 1, 'b': 0}
+  ```
+- `update([other])`: Updates the dictionary with the key/value pairs from `other`, overwriting existing keys.
+- `values()`: Returns a view object that displays a list of all the values.
+
+### Dictionary Comprehensions
+
+Similar to list comprehensions, dictionary comprehensions provide a concise way to create dictionaries.
+Syntax: `{key_expr: value_expr for item in iterable if condition}`
+
+```python
+# Create a dictionary of squares
+squares_dict = {x: x**2 for x in range(5)}
+# squares_dict: {0: 0, 1: 1, 2: 4, 3: 9, 4: 16}
+
+# From existing lists
+keys = ['name', 'age', 'city']
+values = ['Bob', 25, 'Paris']
+person_dict = {k: v for k, v in zip(keys, values)}
+# person_dict: {'name': 'Bob', 'age': 25, 'city': 'Paris'}
+
+# With a condition
+original_dict = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+even_values_dict = {k: v for k, v in original_dict.items() if v % 2 == 0}
+# even_values_dict: {'b': 2, 'd': 4}
+
+# Swapping keys and values (ensure values are unique and hashable if they become keys)
+fruit_colors = {'apple': 'red', 'banana': 'yellow'}
+color_fruits = {v: k for k, v in fruit_colors.items()}
+# color_fruits: {'red': 'apple', 'yellow': 'banana'}
+```
+
+### Use Case Examples (from previous "Challenge")
+
+1.  **Building a hash map from two lists:**
+
+    ```python
+    def build_hash_map(keys_list: list, values_list: list) -> dict:
+        # Using zip and dict constructor is concise
+        return dict(zip(keys_list, values_list))
+        # Alternatively, using a dictionary comprehension:
+        # return {keys_list[i]: values_list[i] for i in range(len(keys_list))}
+
+    keys = ["apple", "banana", "cherry"]
+    values = [0.5, 0.25, 0.75]
+    price_map = build_hash_map(keys, values)
+    print(price_map) # {'apple': 0.5, 'banana': 0.25, 'cherry': 0.75}
+    ```
+
+2.  **Getting values for a list of keys:**
+
+    ```python
+    def get_values_for_keys(hash_map: dict, keys_to_get: list) -> list:
+        # Using a list comprehension
+        return [hash_map[key] for key in keys_to_get]
+        # Assuming all keys in keys_to_get exist in hash_map
+        # If keys might be missing and you want a default:
+        # return [hash_map.get(key, "N/A") for key in keys_to_get]
+
+    fruit_prices = {'apple': 0.5, 'banana': 0.25, 'cherry': 0.75, 'date': 1.0}
+    desired_fruits = ["banana", "date", "apple"]
+    prices = get_values_for_keys(fruit_prices, desired_fruits)
+    print(prices) # [0.25, 1.0, 0.5]
+    ```
+
+### Time Complexity of Basic Dictionary Operations
+
+For Python's `dict` implementation (which uses a hash table):
+
+- **Insertion**: Average `O(1)`, Worst case `O(n)` (due to hash collisions or resizing)
+- **Access/Lookup**: Average `O(1)`, Worst case `O(n)`
+- **Deletion**: Average `O(1)`, Worst case `O(n)`
+
+The `O(n)` worst-case scenarios are rare in practice with good hash functions. For most practical purposes, dictionary operations are considered `O(1)`.
