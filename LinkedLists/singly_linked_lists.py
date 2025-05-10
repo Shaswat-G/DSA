@@ -112,7 +112,7 @@ class LinkedList:
     # -- reverse, merge sorted linked lists
     def reverse(self):
         if self._is_empty():
-            assert False
+            raise ValueError("Cannot reverse an empty linked list.")
         elif self.size == 1:
             pass
         else:
