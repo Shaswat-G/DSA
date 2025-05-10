@@ -73,11 +73,11 @@ class LinkedList:
             self.size += 1
 
         else:
-            assert False
+            raise IndexError("Index out of range.")
 
     def delete_first(self) -> None:
         if self._is_empty():
-            assert False
+            raise IndexError("Cannot delete from an empty list.")
         elif self.size == 1:
             self.head = None
             self.tail = None
