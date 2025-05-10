@@ -89,7 +89,7 @@ class LinkedList:
 
     def delete_end(self) -> None:
         if self._is_empty():
-            assert False
+            raise ValueError("Cannot delete from an empty list.")
         elif self.size == 1:
             self.head = None
             self.tail = None
