@@ -34,7 +34,7 @@ class LinkedList:
                 return current_node
         else:
             return None
-        
+
     # -- CRUD operations
     def prepend(self, value : int) -> None:
         new_node = Node(value, None, self.head)
@@ -44,9 +44,9 @@ class LinkedList:
         else:
             self.head.prev = new_node
             self.head = new_node
-            
+
         self.size += 1
-        
+
     def append(self, value : int) -> None:
         new_node = Node(value, self.tail, None)
         if self._is_empty():
@@ -55,9 +55,9 @@ class LinkedList:
         else:
             self.tail.next = new_node
             self.tail = new_node
-         
+
         self.size +=1 
-    
+
     def insert_at(self, index : int, value : int) -> None:
         if index == 0:
             self.prepend(value)
@@ -70,7 +70,46 @@ class LinkedList:
             current_node.prev = new_node
             prev_node.next = new_node
             self.size +=1
-            
+
+        else:
+            assert False
+
+    def delete_first(self) -> None:
+        if self._is_empty():
+            assert False
+        elif self.size ==1:
+            self.head = None
+            self.tail = None
+        else:
+            self.head = self.head.next
+            self.head.prev = None
+
+        self.size -=1
+
+    def delete_end(self) -> None:
+        if self._is_empty():
+            assert False
+        elif self.size == 1:
+            self.head = None
+            self.tail = None
+        else:
+            self.tail = self.tail.prev
+            self.tail.next = None
+
+        self.size -= 1
+        
+    def delete_at(self, index) -> None:
+        if index == 0:
+            self.delete_first()
+        elif index == self.size-1:
+            self.delete_end()
+        elif self._is_valid_index(index):
+            current_node = self._node_at(index)
+            prev_node = current_node.prev
+            next_node = current_node.next
+            prev_node.next = next_node
+            next_node.prev = prev_node
+            self.size -=1
         else:
             assert False
         
@@ -78,13 +117,13 @@ class LinkedList:
     # -- Pythonic methods
     def __len__(self):
         return self.size
-    
+
     def __iter__(self):
         current_node = self.head
         while current_node:
             yield current_node.value
             current_node = current_node.next
-            
+
     def __str__(self):
         values = []
         current_node = self.head
@@ -93,15 +132,14 @@ class LinkedList:
             current_node = current_node.next
         output = " <--> ".join(values)
         return output
-           
-        
+
+
 def main():
     dll = LinkedList()
     for i in range(5):
         dll.prepend(i)
         dll.append(100-i**2)
     print(dll)
-    
-    
-            
+
+
 main()
