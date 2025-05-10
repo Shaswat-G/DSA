@@ -26,6 +26,8 @@ class BrowserHistory:
         self.tail = home_page_node
 
     def visit(self, url: str) -> None:
+        # Clear forward history
+        self.current_page.next = None
         new_node = Node(url, self.current_page, None)
         self.current_page.next = new_node
         self.tail = new_node
