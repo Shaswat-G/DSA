@@ -118,7 +118,7 @@ class LinkedList:
         else:
             prev_node = self.head
             current_node = prev_node.next
-            
+
             while current_node:
                 next_node = current_node.next
                 current_node.next = prev_node
@@ -128,6 +128,34 @@ class LinkedList:
             self.head.next = None
             self.tail = self.head
             self.head = prev_node
+
+    @staticmethod
+    def merge_sorted(l1, l2):
+        """
+        Merge two sorted LinkedList instances and return a new sorted LinkedList.
+        You need to implement this logic!
+        """
+        # TODO: Implement merge logic here
+        merged = LinkedList()
+        node_1 = l1.head
+        node_2 = l2.head
+        for index in range(l1.size + l2.size):
+            if (not node_1) and (not node_2):
+                break
+            elif (not node_1) and (node_2):
+                merged.append(node_2.value)
+                node_2 = node_2.next
+            elif (node_1) and (not node_2):
+                merged.append(node_1.value)
+                node_1 = node_1.next
+            else:
+                if node_1.value <= node_2.value:
+                    merged.append(node_1.value)
+                    node_1 = node_1.next
+                else:
+                    merged.append(node_2.value)
+                    node_2 = node_2.next
+        return merged
 
     # -- syntactic sugar : __len__, __iter__, __str__
 
@@ -162,6 +190,18 @@ def main():
     print(ll)
     ll.reverse()
     print(ll)
+
+    ll1 = LinkedList()
+    ll2 = LinkedList()
+    # Example sorted lists
+    for v in [1, 3, 5]:
+        ll1.append(v)
+    for v in [2, 4, 6]:
+        ll2.append(v)
+    print("List 1:", ll1)
+    print("List 2:", ll2)
+    merged = LinkedList.merge_sorted(ll1, ll2)
+    print("Merged:", merged)
 
 
 main()
