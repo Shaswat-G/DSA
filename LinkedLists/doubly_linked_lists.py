@@ -112,6 +112,29 @@ class LinkedList:
             self.size -=1
         else:
             assert False
+            
+    # -- Reverse and Merge
+    
+    def reverse(self) -> None:
+        if self._is_empty():
+            assert False
+        else:
+            prev_node = None
+            current_node = self.head
+            self.tail = self.head
+            while current_node:
+                next_node = current_node.next
+                current_node.next = prev_node
+                current_node.prev = next_node
+                prev_node = current_node
+                current_node = next_node
+                
+            self.head = prev_node
+        
+    # @staticmethod
+    # def merge(l1 : LinkedList, l2 : LinkedList) -> LinkedList:
+    #     # TODO : Implement merging
+    #     pass
         
 
     # -- Pythonic methods
@@ -139,6 +162,8 @@ def main():
     for i in range(5):
         dll.prepend(i)
         dll.append(100-i**2)
+    print(dll)
+    dll.reverse()
     print(dll)
 
 
