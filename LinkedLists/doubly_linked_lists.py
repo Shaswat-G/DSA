@@ -56,9 +56,25 @@ class LinkedList:
             self.tail.next = new_node
             self.tail = new_node
          
-        self.size +=1   
+        self.size +=1 
+    
+    def insert_at(self, index : int, value : int) -> None:
+        if index == 0:
+            self.prepend(value)
+        elif index == self.size:
+            self.append(value)
+        elif self._is_valid_index(index):
+            current_node = self._node_at(index)
+            prev_node = current_node.prev
+            new_node  = Node(value, prev_node, current_node)
+            current_node.prev = new_node
+            prev_node.next = new_node
+            self.size +=1
             
+        else:
+            assert False
         
+
     # -- Pythonic methods
     def __len__(self):
         return self.size
