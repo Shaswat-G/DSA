@@ -4,6 +4,7 @@ class Node:
         self.next = next
         self.prev = prev
 
+
 class LinkedList:
     def __init__(self):
         self.head = None
@@ -16,27 +17,27 @@ class LinkedList:
         return self.size == 0
 
     def _is_valid_index(self, index: int) -> bool:
-        return (0 <= index < self.size)
+        return 0 <= index < self.size
 
-    def _node_at(self, index : int) -> Node:
+    def _node_at(self, index: int) -> Node:
         if self._is_empty():
             return None
         elif self._is_valid_index(index):
-            if index <= self.size/2: # closer from head
+            if index <= self.size / 2:  # closer from head
                 current_node = self.head
                 for _ in range(index):
                     current_node = current_node.next
                 return current_node
-            else: # closer from tail
+            else:  # closer from tail
                 current_node = self.tail
-                for _ in range(self.size - index -1):
+                for _ in range(self.size - index - 1):
                     current_node = current_node.prev
                 return current_node
         else:
             return None
 
     # -- CRUD operations
-    def prepend(self, value : int) -> None:
+    def prepend(self, value: int) -> None:
         new_node = Node(value, None, self.head)
         if self._is_empty():
             self.head = new_node
@@ -47,7 +48,7 @@ class LinkedList:
 
         self.size += 1
 
-    def append(self, value : int) -> None:
+    def append(self, value: int) -> None:
         new_node = Node(value, self.tail, None)
         if self._is_empty():
             self.head = new_node
@@ -56,9 +57,9 @@ class LinkedList:
             self.tail.next = new_node
             self.tail = new_node
 
-        self.size +=1 
+        self.size += 1
 
-    def insert_at(self, index : int, value : int) -> None:
+    def insert_at(self, index: int, value: int) -> None:
         if index == 0:
             self.prepend(value)
         elif index == self.size:
@@ -66,10 +67,10 @@ class LinkedList:
         elif self._is_valid_index(index):
             current_node = self._node_at(index)
             prev_node = current_node.prev
-            new_node  = Node(value, prev_node, current_node)
+            new_node = Node(value, prev_node, current_node)
             current_node.prev = new_node
             prev_node.next = new_node
-            self.size +=1
+            self.size += 1
 
         else:
             assert False
@@ -77,14 +78,14 @@ class LinkedList:
     def delete_first(self) -> None:
         if self._is_empty():
             assert False
-        elif self.size ==1:
+        elif self.size == 1:
             self.head = None
             self.tail = None
         else:
             self.head = self.head.next
             self.head.prev = None
 
-        self.size -=1
+        self.size -= 1
 
     def delete_end(self) -> None:
         if self._is_empty():
@@ -97,11 +98,11 @@ class LinkedList:
             self.tail.next = None
 
         self.size -= 1
-        
+
     def delete_at(self, index) -> None:
         if index == 0:
             self.delete_first()
-        elif index == self.size-1:
+        elif index == self.size - 1:
             self.delete_end()
         elif self._is_valid_index(index):
             current_node = self._node_at(index)
@@ -109,12 +110,12 @@ class LinkedList:
             next_node = current_node.next
             prev_node.next = next_node
             next_node.prev = prev_node
-            self.size -=1
+            self.size -= 1
         else:
             assert False
-            
+
     # -- Reverse and Merge
-    
+
     def reverse(self) -> None:
         if self._is_empty():
             assert False
@@ -128,14 +129,13 @@ class LinkedList:
                 current_node.prev = next_node
                 prev_node = current_node
                 current_node = next_node
-                
+
             self.head = prev_node
-        
+
     # @staticmethod
     # def merge(l1 : LinkedList, l2 : LinkedList) -> LinkedList:
     #     # TODO : Implement merging
     #     pass
-        
 
     # -- Pythonic methods
     def __len__(self):
@@ -161,7 +161,7 @@ def main():
     dll = LinkedList()
     for i in range(5):
         dll.prepend(i)
-        dll.append(100-i**2)
+        dll.append(100 - i**2)
     print(dll)
     dll.reverse()
     print(dll)
