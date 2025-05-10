@@ -36,4 +36,56 @@ class LinkedList:
             return None
         
     # -- CRUD operations
+    def prepend(self, value : int) -> None:
+        new_node = Node(value, None, self.head)
+        if self._is_empty():
+            self.head = new_node
+            self.tail = new_node
+        else:
+            self.head.prev = new_node
+            self.head = new_node
+            
+        self.size += 1
+        
+    def append(self, value : int) -> None:
+        new_node = Node(value, self.tail, None)
+        if self._is_empty():
+            self.head = new_node
+            self.tail = new_node
+        else:
+            self.tail.next = new_node
+            self.tail = new_node
+         
+        self.size +=1   
+            
+        
+    # -- Pythonic methods
+    def __len__(self):
+        return self.size
     
+    def __iter__(self):
+        current_node = self.head
+        while current_node:
+            yield current_node.value
+            current_node = current_node.next
+            
+    def __str__(self):
+        values = []
+        current_node = self.head
+        while current_node:
+            values.append(str(current_node.value))
+            current_node = current_node.next
+        output = " <--> ".join(values)
+        return output
+           
+        
+def main():
+    dll = LinkedList()
+    for i in range(5):
+        dll.prepend(i)
+        dll.append(100-i**2)
+    print(dll)
+    
+    
+            
+main()
