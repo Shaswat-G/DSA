@@ -53,62 +53,81 @@ class LinkedList:
             self.append(value)
         else:
             assert self._is_valid_index(index)
-        
-            prev_node = self._node_at(index-1)
+
+            prev_node = self._node_at(index - 1)
             current = prev_node.next
-            
+
             new_node = Node(value, current)
             prev_node.next = new_node
-            self.size +=1
-            
+            self.size += 1
+
     def delete_first(self):
         if self._is_empty():
             return -1
-        
+
         if self.size == 1:
             self.head = None
             self.tail = None
         else:
             self.head = self.head.next
-            
+
         self.size -= 1
-        
+
     def delete_last(self):
         if self._is_empty():
             return -1
-        
+
         if self.size == 1:
             self.head = None
             self.tail = None
         else:
-            self.tail = self._node_at(self.size-2)
+            self.tail = self._node_at(self.size - 2)
             self.tail.next = None
-            
+
         self.size -= 1
-        
+
     def delete_at(self, index):
         assert self._is_valid_index(index)
-        
+
         if index == 0:
             self.delete_first()
-        elif index == (self.size -1):
+        elif index == (self.size - 1):
             self.delete_last()
         else:
-            prev_node = self._node_at(index-1)
+            prev_node = self._node_at(index - 1)
             current_node = prev_node.next
             prev_node.next = current_node.next
-            self.size -=1
-            
+            self.size -= 1
+
     def find(self, value) -> int:
         index = -1
         current_node = self.head
         for idx in range(self.size):
-            if (current_node.value == value):
+            if current_node.value == value:
                 index = idx
                 break
             current_node = current_node.next
         return index
+
     # -- reverse, merge sorted linked lists
+    def reverse(self):
+        if self._is_empty():
+            assert False
+        elif self.size == 1:
+            pass
+        else:
+            prev_node = self.head
+            current_node = prev_node.next
+            
+            while current_node:
+                next_node = current_node.next
+                current_node.next = prev_node
+                prev_node = current_node
+                current_node = next_node
+
+            self.head.next = None
+            self.tail = self.head
+            self.head = prev_node
 
     # -- syntactic sugar : __len__, __iter__, __str__
 
@@ -139,7 +158,9 @@ def main():
     ll.append(10)
     ll.prepend(2)
     print(ll)
-    ll.insert_at(100,2)
+    ll.insert_at(100, 2)
+    print(ll)
+    ll.reverse()
     print(ll)
 
 
