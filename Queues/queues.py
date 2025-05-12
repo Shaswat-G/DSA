@@ -1,5 +1,5 @@
 class Node:
-    """Deinfes the data and attributes of a node in the queue."""
+    """Defines the data and attributes of a node in the queue."""
 
     def __init__(self, value, next=None):
         self.value = value
