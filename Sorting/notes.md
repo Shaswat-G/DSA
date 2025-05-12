@@ -1,36 +1,38 @@
-# Sorting:
-Sorting algos are compared based on:
-1. **Time Complexity**: How fast the algorithm runs.
-2. **Space Complexity**: How much memory the algorithm uses.
-3. Number of passes: How many times the algorithm goes through the data.
-4. Number of comparisons: How many times the algorithm compares elements - decides time complexity.
-5. Number of swaps: How many times the algorithm swaps elements.
-6. Stability: Whether the algorithm maintains the relative order of equal elements. (preserving order of duplicates)
-7. Adaptivity: Whether the algorithm performs better on partially sorted data.
-8. Extra space: Whether the algorithm uses extra space for sorting.
+# Sorting
+
+Sorting algorithms are evaluated based on:
+
+1. **Time Complexity:** Speed of execution.
+2. **Space Complexity:** Memory usage.
+3. **Passes:** Number of full traversals over the data.
+4. **Comparisons:** Number of element comparisons (drives time complexity).
+5. **Swaps:** Number of element swaps.
+6. **Stability:** Preserves the relative order of equal elements.
+7. **Adaptivity:** Performs better on partially sorted data.
+8. **Extra Space:** Uses additional memory for sorting.
 
 ## Classification of Sorting Algorithms
-Comparision Based Sorting:
-- **O(n²)**: Bubble Sort, Selection Sort, Insertion Sort
-- O(n ^ 3/2): Shell Sort
-- **O(n log n)**: Merge Sort, Heap Sort, Quick Sort, Tree Sort
-- O(n) : Counting Sort, Radix Sort, Bucket Sort - But they use extra space.
 
-## Bubble Sort:
-Imagine a bubble rising to the surface. The largest element "bubbles" to the end of the array. Lighter elements rise, while heavier elements sink. This is based on consecutive comparisons and swaps. In each pass, the largest unsorted element is moved to its correct position.
+- **O(n²):** Bubble Sort, Selection Sort, Insertion Sort
+- **O(n^{3/2}):** Shell Sort
+- **O(n log n):** Merge Sort, Heap Sort, Quick Sort, Tree Sort
+- **O(n):** Counting Sort, Radix Sort, Bucket Sort (require extra space)
 
+## Bubble Sort
 
-### Analysis
+Bubble Sort repeatedly steps through the list, compares adjacent elements, and swaps them if they are in the wrong order. With each pass, the largest unsorted element "bubbles" to its correct position at the end.
 
-- **Passes:** n-1 (one for each element except the last)
-- **Comparisons:** Worst case O(n²), as each element may be compared with all previous elements. (Sigma n-1 = n(n-1)/2)
-- **Swaps/Shifts:** Worst case O(n²), as elements may need to be shifted for each insertion. (Sigma n-1 = n(n-1)/2)
+### Bubble Sort Analysis
+
+- **Passes:** n-1
+- **Comparisons:** O(n²) worst case (n(n-1)/2)
+- **Swaps:** O(n²) worst case (n(n-1)/2)
 - **Time Complexity:**
-  - Best: O(n) (already sorted)
+  - Best: O(n) (already sorted, with early exit)
   - Average/Worst: O(n²)
 - **Space Complexity:** O(1) (in-place)
-- **Stability:** Stable (does not change the relative order of equal elements)
-- **Adaptivity:** It is not adaptive by nature. Only if we add a flag to check if any swaps were made in a pass, it can be made adaptive. (if no swaps were made, the array is sorted and we can stop)
+- **Stability:** Stable
+- **Adaptivity:** Not adaptive by default, but can be made adaptive by adding a flag to stop if no swaps occur in a pass.
 
 ## Insertion Sort
 
@@ -67,3 +69,37 @@ Insertion refers to placing a new element at its correct position in a sorted ar
 - It is simple, in-place, stable, and adaptive.
 - Not a divide-and-conquer or greedy algorithm.
 - Intermediate arrays do not necessarily contain the smallest or largest elements in order.
+
+
+## Comparing Bubble Sort and Insertion Sort
+Both have similar properties in that they are stable, in-place, adaptve and have O(n²) time complexity in the worst case. 
+
+Including merge-sort these are the only stable sorting algorithms. Of which insertion and bubble are adaptive.
+
+Bubble is suited for arrays since every intermediate pass gives a sorted array. Insertion is suited for linked lists since it does not require shifting elements, only traversal.
+
+## Selection Sort
+Starting from the first index, we find the smallest element in the array and swap it with the first element. We then repeat this process for the remaining unsorted elements, one by one.
+
+
+### Algorithm
+add description
+1. Start with the first element as the minimum.
+2. Iterate through the array to find the smallest element.
+3. swap the smallest element with the first element.
+4. Repeat for the rest of the array.
+
+### Analysis
+- **Passes:** n-1 (one for each element)
+- **Comparisons:** O(n²) (n(n-1)/2)
+- **Swaps:** O(n) (one swap per pass) -- This is a key difference from bubble and insertion sort, which can have O(n²) swaps. This is the main advantage of selection sort.
+- **Time Complexity:**
+  - Best: O(n²)
+  - Average/Worst: O(n²)
+  - Best case is O(n²) because it always goes through the entire array to find the minimum.
+  - space complexity is O(1) because it only uses a constant amount of extra space.
+  
+### Reflections
+- Selection sort is not adaptive, as it always performs the same number of comparisons regardless of the initial order of elements.
+- It is not stable, as it may change the relative order of equal elements.
+- Intermieduate passes are useful, they give the k-smallest elements in the first k passes.
