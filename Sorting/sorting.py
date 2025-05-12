@@ -28,12 +28,26 @@ class Sorter:
             if not swap_flag:
                 break
         return None
+    
+    def selection_sort(self, descending=False) -> None:
+        for count in range(0, self.size-1):
+            min_index_yet = count
+            for index in range(count+1 ,self.size):
+                if self.array[index] < self.array[min_index_yet]:
+                    min_index_yet = index
+            temp = self.array[count]
+            self.array[count] = self.array[min_index_yet]
+            self.array[min_index_yet] = temp
+        return None
+            
 
     def __len__(self):
         return len(self.size)
 
     def __str__(self):
         return " | ".join([str(i) for i in self.array])
+    
+    
 
 
 def main():
@@ -48,5 +62,14 @@ def main():
     print(f"Gonna do Bubble sort on {obj}")
     obj.bubble_sort()
     print(obj)
+    
+    array = [12, 4, 7, 1, 0, 2]
+    obj = Sorter(array)
+    print(f"Gonna do Selection sort on {obj}")
+    obj.selection_sort()
+    print(obj)
+    
+    
+    
 
 main()
