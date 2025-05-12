@@ -1,9 +1,9 @@
-class InsertionSort:
+class Sorter:
     def __init__(self, array : list):
         self.array = array
         self.size = len(array)
 
-    def sort(self, descending = False) -> None:
+    def insertion_sort(self, descending = False) -> None:
         # Assume element at 0 is sorted
 
         for index in range(1, self.size):
@@ -15,6 +15,20 @@ class InsertionSort:
             self.array[cmp_pointer+1] = element
         return None
 
+    def bubble_sort(self, descending = False) -> None:
+        for count in range(1, self.size):
+            swap_flag = False
+            for index in range(0,self.size - count):
+                if self.array[index] > self.array[index+1]:
+                    temp = self.array[index+1]
+                    self.array[index + 1] = self.array[index]
+                    self.array[index] = temp
+                    swap_flag = True
+                
+            if not swap_flag:
+                break
+        return None
+
     def __len__(self):
         return len(self.size)
 
@@ -24,9 +38,15 @@ class InsertionSort:
 
 def main():
     array = [12,4,7,1,0,2]
-    obj = InsertionSort(array)
+    obj = Sorter(array)
+    print(f"Gonna do Insertion sort on {obj}")
+    obj.insertion_sort()
     print(obj)
-    obj.sort()
+
+    array = [12, 4, 7, 1, 0, 2]
+    obj = Sorter(array)
+    print(f"Gonna do Bubble sort on {obj}")
+    obj.bubble_sort()
     print(obj)
 
 main()
