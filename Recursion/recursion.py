@@ -49,7 +49,7 @@ def binary_search(array: list, search_item) -> int:
     # assume ascending
     if len(array) % 2 == 0:
         # even
-        right_middle = len(array) / 2
+        right_middle = len(array) // 2
         left_middle = right_middle - 1
         if search_item < array[left_middle]:
             return binary_search(array[:left_middle], search_item)
