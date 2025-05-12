@@ -93,7 +93,7 @@ def main():
 
     num = 10
     sequence = ", ".join([str(fibonacci(i)) for i in range(num)])
-    print(f"Fibonaaci Sequence for {num} is {sequence}")
+    print(f"Fibonacci Sequence for {num} is {sequence}")
 
     array = [3, 1, 7, 4, 0, 1, 6]
     print(f" Original sum {sum(array)} and {sum_of_array(array)}")
