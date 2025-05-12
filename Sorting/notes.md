@@ -70,36 +70,40 @@ Insertion refers to placing a new element at its correct position in a sorted ar
 - Not a divide-and-conquer or greedy algorithm.
 - Intermediate arrays do not necessarily contain the smallest or largest elements in order.
 
-
 ## Comparing Bubble Sort and Insertion Sort
-Both have similar properties in that they are stable, in-place, adaptve and have O(n²) time complexity in the worst case. 
+
+Both have similar properties in that they are stable, in-place, adaptive and have O(n²) time complexity in the worst case.
 
 Including merge-sort these are the only stable sorting algorithms. Of which insertion and bubble are adaptive.
 
 Bubble is suited for arrays since every intermediate pass gives a sorted array. Insertion is suited for linked lists since it does not require shifting elements, only traversal.
 
 ## Selection Sort
-Starting from the first index, we find the smallest element in the array and swap it with the first element. We then repeat this process for the remaining unsorted elements, one by one.
 
+Selection Sort repeatedly selects the smallest remaining element and swaps it into its correct position. With each pass, the next smallest element is placed at the start of the unsorted portion.
 
-### Algorithm
-add description
+### Selection Sort Algorithm
+
 1. Start with the first element as the minimum.
 2. Iterate through the array to find the smallest element.
-3. swap the smallest element with the first element.
+3. Swap the smallest element with the first element.
 4. Repeat for the rest of the array.
 
-### Analysis
-- **Passes:** n-1 (one for each element)
+### Selection Sort Analysis
+
+- **Passes:** n-1
 - **Comparisons:** O(n²) (n(n-1)/2)
-- **Swaps:** O(n) (one swap per pass) -- This is a key difference from bubble and insertion sort, which can have O(n²) swaps. This is the main advantage of selection sort.
+- **Swaps:** O(n) (one swap per pass) — a key advantage over Bubble and Insertion Sort, which can have O(n²) swaps.
 - **Time Complexity:**
   - Best: O(n²)
   - Average/Worst: O(n²)
-  - Best case is O(n²) because it always goes through the entire array to find the minimum.
-  - space complexity is O(1) because it only uses a constant amount of extra space.
-  
-### Reflections
-- Selection sort is not adaptive, as it always performs the same number of comparisons regardless of the initial order of elements.
-- It is not stable, as it may change the relative order of equal elements.
-- Intermieduate passes are useful, they give the k-smallest elements in the first k passes.
+  - No improvement in best case, as the entire array is always scanned.
+- **Space Complexity:** O(1) (in-place)
+- **Stability:** Not stable (may change the relative order of equal elements)
+- **Adaptivity:** Not adaptive (performs the same regardless of initial order)
+
+### Selection Sort Reflections
+
+- Simple and in-place, but not stable or adaptive.
+- Useful when minimizing swaps is important.
+- After k passes, the first k elements are the k smallest, sorted.
