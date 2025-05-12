@@ -71,6 +71,22 @@ def binary_search(array: list, search_item) -> int:
             return binary_search(array[middle + 1 :], search_item)
 
 
+# You are given an integer n representing the number of steps to reach the top of a staircase.
+# You can climb with either 1 or 2 steps at a time.
+# Return the number of distinct ways to climb to the top of the staircase.
+# for n =1, 1, for n=2, 2, for n=3, 3 and so on
+
+# --- climbing stairs problem is the same as the fibonacci problem
+def climbing_stairs(num_stairs: int) -> int:
+    if num_stairs <= 0:
+        # validate
+        return -1
+    elif num_stairs <= 2:  # base case
+        return num_stairs
+    else:  # recursive case
+        return climbing_stairs(num_stairs - 1) + climbing_stairs(num_stairs - 2)
+
+
 def main():
     num = 5
     print(f"Factorial of {num} is {factorial(num)}")
@@ -90,6 +106,12 @@ def main():
 
     string = "borroworrob"
     print(f"Check if {string} is a palindrome : {check_palindrome(string)}")
+
+    # Climbing stairs tests
+    print("Climbing stairs samples:")
+    for n in range(0, 7):
+        print(f"Ways to climb {n} stairs: {climbing_stairs(n)}")
+    print(f"Ways to climb -1 stairs (invalid): {climbing_stairs(-1)}")
 
 
 main()
