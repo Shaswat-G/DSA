@@ -1,34 +1,35 @@
-## Insertion Sort:
+## Insertion Sort
 
-### What is an Inssertion?
+### What is Insertion?
 
-Inserting refers to inserting a new element at the correct posiiton in the sorted array. This means traversing the array from the end whil shifting the elements to the right until the correct posiiton is foind and isnetting the element at that position.
+Insertion refers to placing a new element at its correct position in a sorted array. This involves traversing from the end of the sorted portion, shifting elements right until the correct spot is found, and inserting the element there.
 
-Therefore inserting is a O(n) operation.
+- In arrays, insertion is an O(n) operation due to shifting.
+- In linked lists, insertion at head/tail is O(1), but inserting at a specific position is O(n) due to traversal (no shifting required). Thus, insertion is more suited to linked lists.
 
-FOr linked lists, we can insert at the head or tail in O(1) time. But if we want to insert at a specific position, we need to traverse the list to find that position. This is O(n) operation. Although no shifting is required. => Insertion is more suited to linked lists.
+### Algorithm
 
-### The algo:
-1. Start from the first element and consider it as sorted. This is the first pass, and the subarray of the first element is already sorted.
-2. Take the next element and compare it with the elements in the sorted subarray.
-3. Shift the elements in the sorted subarray to the right until you find the correct position for the new element.
-4. Insert the new element at the correct position.
-5. Repeat steps 2-4 for all elements in the array.
+1. Consider the first element as sorted.
+2. For each subsequent element, compare it with elements in the sorted subarray.
+3. Shift larger elements to the right. (not equal, this gives stability)
+4. Insert the current element at its correct position.
+5. Repeat for all elements.
 
-### Analysis:
-1. Number of passes: n-1 (one for each element after the first)
-2. Number of comparisions: For every element "n" there will be "n-1" comparisions in the worst case. So the total number of comparisions is n(n-1)/2 = O(n^2)
-3. Number of swaps: For every element "n" there will be "n-1" swaps in the worst case. So the total number of swaps is n(n-1)/2 = O(n^2)
-4. Therefore the time complexity is O(n^2) in the worst case.
-5. Best Case: Already sorted O(n) - no swaps, only comparisions.
-6. Worst Case: Reverse sorted O(n^2) - all swaps, all comparisions.
-7. Average Case: O(n^2) - all swaps, all comparisions.
+### Analysis
 
+- **Passes:** n-1 (one for each element after the first)
+- **Comparisons:** Worst case O(n²), as each element may be compared with all previous elements. (Sigma n-1 = n(n-1)/2)
+- **Swaps/Shifts:** Worst case O(n²), as elements may need to be shifted for each insertion. (Sigma n-1 = n(n-1)/2)
+- **Time Complexity:**
+  - Best: O(n) (already sorted)
+  - Average/Worst: O(n²)
+- **Space Complexity:** O(1) (in-place)
+- **Stability:** Stable (does not change the relative order of equal elements)
+- **Adaptivity:** Adaptive by nature (performs better on partially sorted data)
 
-### Reflections:
-Insertion sort is designed for linked lists, since we do not need to shift elements.
-5. In Place: The algorithm is in-place because we are not using any extra space. => space complexity is O(1) 
-6. Stable: The algorithm is stable because we are not changing the relative order of equal elements.
-7. Adaptive: By nature and by design, the algorithm is adaptive because it takes advantage of the existing order in the array. If the array is already sorted, the time complexity is O(n) since we do n-1 comparisins and 0 swaps.
-8. Simple iterative, neither greedy nor divide and conquer : The intermediate array is not sorted. The algorithm is not a divide and conquer algorithm. It is a simple iterative algorithm. The intermediate array does not contain any useful informtaion - no smallest or largest element.
+### Reflections
 
+- Insertion sort is especially efficient for small or nearly sorted datasets.
+- It is simple, in-place, stable, and adaptive.
+- Not a divide-and-conquer or greedy algorithm.
+- Intermediate arrays do not necessarily contain the smallest or largest elements in order.
