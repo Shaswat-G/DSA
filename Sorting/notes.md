@@ -400,3 +400,86 @@ Given `[8, 4, 5, 7, 1, 3, 6, 2]`:
 - **Iterative merge sort** uses nested loops to merge subarrays of increasing size.
 - **Helper functions** (like merging two sorted arrays) are essential for both approaches.
 - Handles all array sizes, including non-powers of two, via careful index calculations.
+
+---
+
+## Counting Sort
+
+Counting Sort is a non-comparative integer sorting algorithm that sorts elements by counting the number of occurrences of each unique value. It is efficient for sorting integers within a known, limited range.
+
+### Counting Sort Analysis
+
+- **Time Complexity:**
+  - Best: O(n + k)
+  - Average: O(n + k)
+  - Worst: O(n + k)
+  - Where n = number of elements, k = range of input (max value)
+- **Space Complexity:** O(n + k) (requires extra space for the count array and output array)
+- **Stability:** Stable (if implemented with output array)
+- **Adaptivity:** Not adaptive (performance does not improve for partially sorted data)
+- **Extra Space:** Requires O(k) extra space for the count array
+
+### Counting Sort Implementation Details
+
+#### Algorithm Steps
+
+1. Find the maximum value in the array to determine the range (k).
+2. Initialize a count array of size k+1 to zero.
+3. Count the occurrences of each element in the input array.
+4. (Optional for stable sort) Compute prefix sums in the count array to determine positions.
+5. Place each element in its correct position in the output array.
+6. Copy the output array back to the original array.
+
+#### Caveats, Sacrifices, and Tradeoffs
+
+- Only works for non-negative integers (or must be adapted for negatives).
+- Not suitable for large ranges (large k), as space and time grow with k.
+- Very fast for small ranges, but impractical for large or sparse data.
+- Not a comparison sort; does not work for arbitrary objects or floating-point numbers.
+
+#### Key Idea / Philosophy
+
+- Sacrifices generality for speed: extremely fast for small integer ranges, but not universal.
+- Trades extra space for linear time.
+
+---
+
+## Radix Sort
+
+Radix Sort is a non-comparative sorting algorithm that sorts numbers by processing individual digits. It processes digits from least significant to most significant (LSD) or vice versa (MSD), using a stable sub-sorting algorithm (often counting sort) at each digit position.
+
+### Radix Sort Analysis
+
+- **Time Complexity:**
+  - Best: O(d·(n + k))
+  - Average: O(d·(n + k))
+  - Worst: O(d·(n + k))
+  - Where n = number of elements, k = range of digits (e.g., 0-9), d = number of digits in the largest number
+- **Space Complexity:** O(n + k) (for buckets or count arrays at each digit pass)
+- **Stability:** Stable (if the sub-sorting algorithm is stable)
+- **Adaptivity:** Not adaptive
+- **Extra Space:** Requires O(n + k) extra space per digit pass
+
+### Radix Sort Implementation Details
+
+#### Algorithm Steps
+
+1. Find the maximum number to determine the number of digits (d).
+2. For each digit position (from least significant to most significant):
+   - Use a stable sort (like counting sort) to sort the array based on the current digit.
+3. After processing all digit positions, the array is sorted.
+
+#### Caveats, Sacrifices, and Tradeoffs
+
+- Only works for integers (or fixed-length strings); not suitable for floating-point numbers or arbitrary objects.
+- Performance depends on the number of digits (d) and the range of each digit (k).
+- Requires extra space for buckets or count arrays at each digit pass.
+- Not comparison-based; can outperform O(n log n) sorts for large n and small d.
+- Not adaptive; does not benefit from partially sorted data.
+
+#### Key Idea / Philosophy
+
+- Sacrifices generality for speed: extremely fast for large lists of integers with limited digit length.
+- Trades extra space and multiple passes for linear time in practice for many cases.
+
+---
