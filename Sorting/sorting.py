@@ -245,7 +245,7 @@ def main():
     print(obj)
 
     obj = Sorter(array)
-    print(f"Gonna do Raddix sort on {obj}")
+    print(f"Gonna do Radix sort on {obj}")
     obj.radix_sort()
     print(obj)
 
