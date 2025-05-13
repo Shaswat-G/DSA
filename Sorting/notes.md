@@ -34,6 +34,40 @@ Bubble Sort repeatedly steps through the list, compares adjacent elements, and s
 - **Stability:** Stable
 - **Adaptivity:** Not adaptive by default, but can be made adaptive by adding a flag to stop if no swaps occur in a pass.
 
+### Bubble Sort Implementation Details
+
+#### Algorithm Steps
+
+1. Start from the beginning of the array.
+2. Compare each pair of adjacent elements.
+3. If the elements are in the wrong order, swap them.
+4. After each pass, the largest unsorted element "bubbles" to its correct position at the end.
+5. Repeat for all elements, reducing the unsorted portion by one each time.
+
+#### Purpose of Loops
+
+- **Outer loop:** Controls the number of passes (n-1 passes for n elements).
+- **Inner loop:** Iterates through the unsorted portion, comparing and swapping adjacent elements.
+
+#### Indices and Termination
+
+- The inner loop runs from index 0 to `size - count - 1` (where `count` is the current pass).
+- After each pass, the last `count` elements are sorted and do not need to be checked again.
+
+#### Edge Cases
+
+- If no swaps occur during a pass, the array is already sorted (adaptive optimization).
+- Works for arrays of any size, including empty or single-element arrays.
+
+#### Key Idea / Philosophy
+
+- Simple, intuitive, and easy to implement.
+- Not efficient for large datasets.
+- Each pass guarantees that the next largest element is placed in its correct position.
+- Can be made adaptive by checking for swaps.
+
+---
+
 ## Insertion Sort
 
 ### What is Insertion?
@@ -69,6 +103,42 @@ Insertion refers to placing a new element at its correct position in a sorted ar
 - It is simple, in-place, stable, and adaptive.
 - Not a divide-and-conquer or greedy algorithm.
 - Intermediate arrays do not necessarily contain the smallest or largest elements in order.
+
+### Insertion Sort Implementation Details
+
+#### Algorithm Steps
+
+1. Assume the first element is sorted.
+2. For each subsequent element, store it as the "key".
+3. Compare the key with elements in the sorted portion (to its left).
+4. Shift larger elements to the right to make space.
+5. Insert the key at its correct position.
+6. Repeat for all elements.
+
+#### Purpose of Loops
+
+- **Outer loop:** Iterates from the second element to the end (index 1 to n-1).
+- **Inner loop:** Moves leftward through the sorted portion, shifting elements as needed.
+
+#### Indices and Termination
+
+- The outer loop index marks the current element to insert.
+- The inner loop index moves left from the current position, stopping when the correct spot is found or the start of the array is reached.
+
+#### Edge Cases
+
+- Already sorted arrays: minimal shifts, best-case O(n).
+- Empty or single-element arrays: no action needed.
+- Stable by design (equal elements are not swapped).
+
+#### Key Idea / Philosophy
+
+- Mimics the way people sort playing cards.
+- Efficient for small or nearly sorted datasets.
+- In-place, stable, and adaptive.
+- Not divide-and-conquer; does not guarantee smallest/largest elements are in place after each pass.
+
+---
 
 ## Comparing Bubble Sort and Insertion Sort
 
@@ -108,6 +178,42 @@ Selection Sort repeatedly selects the smallest remaining element and swaps it in
 - Useful when minimizing swaps is important.
 - After k passes, the first k elements are the k smallest, sorted.
 
+### Selection Sort Implementation Details
+
+#### Algorithm Steps
+
+1. Start with the first element as the minimum.
+2. Scan the unsorted portion to find the smallest element.
+3. Swap the smallest element with the first unsorted element.
+4. Move the boundary of the sorted portion one step forward.
+5. Repeat until the array is sorted.
+
+#### Purpose of Loops
+
+- **Outer loop:** Marks the boundary between sorted and unsorted portions (from 0 to n-2).
+- **Inner loop:** Scans the unsorted portion to find the minimum element.
+
+#### Indices and Termination
+
+- The outer loop index marks the current position to fill with the minimum.
+- The inner loop index scans from `count+1` to the end.
+- After each pass, the sorted portion grows by one.
+
+#### Edge Cases
+
+- Works for arrays of any size.
+- Not stable: swapping can change the order of equal elements.
+- Not adaptive: always scans the entire unsorted portion.
+
+#### Key Idea / Philosophy
+
+- Minimizes the number of swaps (at most n-1).
+- Simple and in-place.
+- Useful when swap cost is high.
+- After k passes, the first k elements are the k smallest, sorted.
+
+---
+
 ## Quick Sort
 
 Quick Sort is a divide-and-conquer algorithm that sorts an array by selecting a "pivot" element and partitioning the other elements into two sub-arrays, according to whether they are less than or greater than the pivot. The sub-arrays are then sorted recursively.
@@ -133,6 +239,43 @@ Quick Sort is a divide-and-conquer algorithm that sorts an array by selecting a 
   - Worst: O(n²) (unbalanced partitioning)
 
 Clearly, best and worst cases are not simply array configurations. To decide best and worst casse we need to consider whether or not the combination of the pivot and array config result in a balanced partitioning.
+
+### Quick Sort Implementation Details
+
+#### Algorithm Steps
+
+1. Choose a pivot element (commonly first, last, middle, or random).
+2. Partition the array so that elements less than the pivot are on the left, and elements greater than the pivot are on the right.
+3. Place the pivot in its correct sorted position.
+4. Recursively apply the same process to the left and right subarrays.
+5. Base case: subarrays of size 0 or 1 are already sorted.
+
+#### Purpose of Loops
+
+- **Partitioning loop:** Moves pointers inward, swapping elements to ensure partitioning around the pivot.
+- **Recursive calls:** Divide the array into subproblems (left and right of the pivot).
+
+#### Indices and Termination
+
+- Partitioning uses two pointers: left (starts at low+1) and right (starts at high).
+- The partitioning loop continues until the pointers cross.
+- After partitioning, the pivot is placed at its correct index.
+- Recursion terminates when subarray size is 0 or 1 (`low >= high`).
+
+#### Edge Cases
+
+- Worst case occurs when the pivot is always the smallest or largest element (unbalanced partitioning).
+- Can be improved by randomizing the pivot or using median-of-three.
+- Handles arrays of any size, including empty or single-element arrays.
+
+#### Key Idea / Philosophy
+
+- Divide-and-conquer: partitions the array into smaller subproblems.
+- In-place and efficient on average (O(n log n)), but not stable.
+- Performance depends on pivot choice and partitioning balance.
+- Recursion forms a binary tree of subproblems.
+
+---
 
 ## Merge Sort
 
