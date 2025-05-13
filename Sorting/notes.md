@@ -107,3 +107,27 @@ Selection Sort repeatedly selects the smallest remaining element and swaps it in
 - Simple and in-place, but not stable or adaptive.
 - Useful when minimizing swaps is important.
 - After k passes, the first k elements are the k smallest, sorted.
+
+
+## Quick Sort
+Quick Sort is a divide-and-conquer algorithm that sorts an array by selecting a "pivot" element and partitioning the other elements into two sub-arrays, according to whether they are less than or greater than the pivot. The sub-arrays are then sorted recursively.
+
+### Quick Sort Algorithm
+1. Choose a pivot element from the array. (frist, last, middle or random)
+2. Partition the array into two sub-arrays:
+   - Elements less than the pivot
+   - Elements greater than the pivot
+   - The pivot itself
+3. Recursively apply the same process to the sub-arrays.
+4. Combine the sorted sub-arrays and the pivot to get the final sorted array.
+
+### Quick Sort Analysis
+- **Passes:** n-1 (for n elements)
+- **Comparisons:** O(n log n) average case, O(n²) worst case (when the pivot is the smallest or largest element)
+- **Swaps:** O(n log n) average case, O(n²) worst case
+- **Time Complexity:**
+  - Best: O(n log n) (balanced partitioning) - when the pivot divides the array into two equal halves
+  - Average: O(n log n)
+  - Worst: O(n²) (unbalanced partitioning)
+
+Clearly, best and worst cases are not simply array configurations. To decide best and worst casse we need to consider whether or not the combination of the pivot and array config result in a balanced partitioning.
