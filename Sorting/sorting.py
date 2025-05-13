@@ -122,9 +122,9 @@ class Sorter:
         return None
 
     def iterative_merge_sort(self) -> None:
-        # codify the legnth of sub-array to be merged in each pass by a parameter called sub_array_size, initialized to 1
+        # codify the length of sub-array to be merged in each pass by a parameter called sub_array_size, initialized to 1
         sub_array_size = 1
-        # we have to run the merging step till the size of the sub-array exceeds the lenght of the original array
+        # we have to run the merging step till the size of the sub-array exceeds the length of the original array
         while sub_array_size < self.size:
             # Now we have to merge consecutive sub-array pairs (low, mid), (mid+1, high), next_low, etc
             for low in range(
