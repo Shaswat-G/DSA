@@ -39,7 +39,34 @@ class Sorter:
             self.array[count] = self.array[min_index_yet]
             self.array[min_index_yet] = temp
         return None
+    
+    
+    # -- helper for quick sort
+    
+    def _partition(self, low : int, high : int) -> int:
+        return 1
+    
+    def quick_sort(self,low : int, high : int,  descending = False) -> None:
+        # pivot selection strategy : first element
+        if (high-low) + 1 <=1:
+            return self.array[low:high+1]
+        else:
+            pivot_element = self.array[low]
+            while low < high:
+                while low < high and pivot_element > self.array[low]:
+                    low += 1
+                while low < high and pivot_element < self.array[high]:
+                    high -= 1
+                if low < high:
+                    temp = self.array[low]
+                    self.array[low] = self.array[high]
+                    self.array[high] = temp
+            self.array[low] = pivot_element
+            self.quick_sort(low, low-1)
+            self.quick_sort(low+1, high)
+        return None
             
+                    
 
     def __len__(self):
         return len(self.size)
