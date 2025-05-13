@@ -158,6 +158,42 @@ class Sorter:
             self.merge_in_place(low, mid, high)
             return None
 
+    def count_sort(self) -> None:
+        max_element = max(self.array)
+        count_array = [0]*(max_element+1)
+
+        for element in self.array:
+            count_array[element] += 1
+
+        main_index = 0
+        for index, count in enumerate(count_array):
+            while count >0:
+                self.array[main_index] = index
+                main_index += 1
+                count -= 1
+
+        del count_array
+        return None
+
+    def radix_sort(self) -> None:
+        max_element = max(self.array)
+
+        divisor = 1
+        while(max_element//divisor >0):
+            radix_array = [[] for _ in range(10)]
+            for element in self.array:
+                radix_array[(element//divisor)%10].append(element)
+
+            main_index = 0
+            for element_list in radix_array:
+                for element in element_list:
+                    self.array[main_index] = element
+                    main_index += 1
+
+            divisor = divisor*10
+
+        return None
+
     def __len__(self):
         return self.size
 
@@ -166,25 +202,24 @@ class Sorter:
 
 
 def main():
-    array = [12, 4, 7, 1, 0, 2]
+
+    array = [12, 4, 7, 1, 0, 2, 4, 15]
+
     obj = Sorter(array)
     print(f"Gonna do Insertion sort on {obj}")
     obj.insertion_sort()
     print(obj)
 
-    array = [12, 4, 7, 1, 0, 2]
     obj = Sorter(array)
     print(f"Gonna do Bubble sort on {obj}")
     obj.bubble_sort()
     print(obj)
 
-    array = [12, 4, 7, 1, 0, 2]
     obj = Sorter(array)
     print(f"Gonna do Selection sort on {obj}")
     obj.selection_sort()
     print(obj)
 
-    array = [12, 4, 7, 1, 0, 2]
     obj = Sorter(array)
     print(f"Gonna do quick sort on {obj}")
     obj.quick_sort(0, len(obj.array) - 1)
@@ -194,17 +229,24 @@ def main():
     b = [2, 4, 6]
     print(f"Print the new array {Sorter(Sorter.merge_arrays(a, b))}")
 
-    array = [12, 4, 7, 1, 0, 2]
     obj = Sorter(array)
     print(f"Gonna do Iterative Merge sort on {obj}")
     obj.iterative_merge_sort()
     print(obj)
 
-    array = [12, 4, 7, 1, 0, 2]
     obj = Sorter(array)
     print(f"Gonna do Recursive Merge sort on {obj}")
     obj.recursive_merge_sort(0,obj.size-1)
     print(obj)
 
+    obj = Sorter(array)
+    print(f"Gonna do Count sort on {obj}")
+    obj.count_sort()
+    print(obj)
+
+    obj = Sorter(array)
+    print(f"Gonna do Raddix sort on {obj}")
+    obj.radix_sort()
+    print(obj)
 
 main()
