@@ -108,11 +108,12 @@ Selection Sort repeatedly selects the smallest remaining element and swaps it in
 - Useful when minimizing swaps is important.
 - After k passes, the first k elements are the k smallest, sorted.
 
-
 ## Quick Sort
+
 Quick Sort is a divide-and-conquer algorithm that sorts an array by selecting a "pivot" element and partitioning the other elements into two sub-arrays, according to whether they are less than or greater than the pivot. The sub-arrays are then sorted recursively.
 
 ### Quick Sort Algorithm
+
 1. Choose a pivot element from the array. (frist, last, middle or random)
 2. Partition the array into two sub-arrays:
    - Elements less than the pivot
@@ -122,6 +123,7 @@ Quick Sort is a divide-and-conquer algorithm that sorts an array by selecting a 
 4. Combine the sorted sub-arrays and the pivot to get the final sorted array.
 
 ### Quick Sort Analysis
+
 - **Passes:** n-1 (for n elements)
 - **Comparisons:** O(n log n) average case, O(n²) worst case (when the pivot is the smallest or largest element)
 - **Swaps:** O(n log n) average case, O(n²) worst case
@@ -131,3 +133,127 @@ Quick Sort is a divide-and-conquer algorithm that sorts an array by selecting a 
   - Worst: O(n²) (unbalanced partitioning)
 
 Clearly, best and worst cases are not simply array configurations. To decide best and worst casse we need to consider whether or not the combination of the pivot and array config result in a balanced partitioning.
+
+## Merge Sort
+
+Merge Sort is a classic **divide-and-conquer** algorithm that sorts an array by recursively dividing it into halves, sorting each half, and then merging the sorted halves back together.
+
+### Divide and Conquer
+
+- **Divide:** Split the array into two halves.
+- **Conquer:** Recursively sort each half.
+- **Combine:** Merge the two sorted halves into a single sorted array.
+
+This approach breaks a problem into smaller subproblems, solves them independently, and combines their results.
+
+### Top-Down vs Bottom-Up
+
+- **Top-Down (Recursive Merge Sort):** The array is recursively divided into halves until each subarray has one element (base case). Sorting is performed during the merging phase as recursion unwinds.
+- **Bottom-Up (Iterative Merge Sort):** The array is viewed as n sorted subarrays of size 1. Adjacent subarrays are merged in pairs, doubling the subarray size each pass, until the whole array is merged.
+
+---
+
+### Recursive Merge Sort (Top-Down)
+
+#### Implementation Steps
+
+1. **Base Case:** If the subarray has one element (`low == high`), it is already sorted.
+2. **Divide:** Find the middle index (`mid = (low + high) // 2`).
+3. **Recursive Calls:** Recursively sort the left (`low` to `mid`) and right (`mid+1` to `high`) halves.
+4. **Merge:** Merge the two sorted halves using a helper function.
+
+#### Indices and Termination
+
+- `low`: Start index of the subarray.
+- `high`: End index of the subarray.
+- **Termination:** When `low >= high`. If `low > high`, it's an invalid range (edge case).
+
+#### Recursion Tree Example
+
+For array `[5, 2, 4, 7]`:
+
+```
+merge_sort(0,3)
+├─ merge_sort(0,1)
+│  ├─ merge_sort(0,0)
+│  └─ merge_sort(1,1)
+├─ merge_sort(2,3)
+│  ├─ merge_sort(2,2)
+│  └─ merge_sort(3,3)
+```
+
+Each call splits the array, forming a binary tree of recursive calls.
+
+---
+
+### Iterative Merge Sort (Bottom-Up)
+
+#### Implementation Steps
+
+1. **Initialize subarray size:** Start with `sub_array_size = 1` (each element is a sorted subarray).
+2. **Merge Passes:** For each pass, merge adjacent subarrays of size `sub_array_size`.
+   - For each pair, calculate:
+     - `low`: Start index of the first subarray.
+     - `mid`: End index of the first subarray (`low + sub_array_size - 1`).
+     - `high`: End index of the second subarray (`low + 2*sub_array_size - 1` or array end).
+   - Merge the two subarrays if `mid < high`.
+3. **Double subarray size:** After each pass, set `sub_array_size *= 2`.
+4. **Terminate:** When `sub_array_size` exceeds array length.
+
+#### Loop Purposes
+
+- **Outer loop:** Controls the size of subarrays to merge.
+- **Inner loop:** Iterates over the array, merging adjacent subarrays.
+
+#### Edge Cases
+
+- When the array size is not a power of two, the last subarray may be smaller.
+- Ensure indices do not exceed array bounds using `min()`.
+
+---
+
+### Helper Functions
+
+Before implementing merge sort, it's instrumental to implement:
+
+- **Merge Function:** Merges two sorted subarrays into a single sorted array (or merges in place).
+- **Index Calculations:** For iterative merge sort, carefully calculate `low`, `mid`, and `high` for each merge.
+
+---
+
+### Summary Table
+
+| Implementation | Approach  | Recursion | Subarray Division | Merge Direction | Space Complexity |
+| -------------- | --------- | --------- | ----------------- | --------------- | ---------------- |
+| Recursive      | Top-Down  | Yes       | Halves            | Bottom-Up       | O(n)             |
+| Iterative      | Bottom-Up | No        | Fixed-size pairs  | Top-Down        | O(n)             |
+
+---
+
+### Example: Merge Sort Steps
+
+Given `[8, 4, 5, 7, 1, 3, 6, 2]`:
+
+**Recursive:**
+
+1. Split into `[8,4,5,7]` and `[1,3,6,2]`
+2. Further split until single elements.
+3. Merge pairs: `[8,4]` → `[4,8]`, `[5,7]` → `[5,7]`, etc.
+4. Merge larger sorted subarrays: `[4,8,5,7]` → `[4,5,7,8]`, etc.
+5. Final merge: `[1,2,3,4,5,6,7,8]`
+
+**Iterative:**
+
+1. Merge pairs of size 1: `[8,4]` → `[4,8]`, `[5,7]` → `[5,7]`, etc.
+2. Merge pairs of size 2: `[4,8,5,7]` → `[4,5,7,8]`, etc.
+3. Continue doubling subarray size until the whole array is merged.
+
+---
+
+### Key Points
+
+- **Merge step** requires O(n) extra space.
+- **Recursive merge sort** forms a binary recursion tree.
+- **Iterative merge sort** uses nested loops to merge subarrays of increasing size.
+- **Helper functions** (like merging two sorted arrays) are essential for both approaches.
+- Handles all array sizes, including non-powers of two, via careful index calculations.
