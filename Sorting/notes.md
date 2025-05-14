@@ -2,7 +2,7 @@
 
 Sorting algorithms are evaluated based on:
 
-1. **Time Complexity:** Speed of execution.
+1. **Time Complexity:** Speed of execution - depends on #comparisions.
 2. **Space Complexity:** Memory usage.
 3. **Passes:** Number of full traversals over the data.
 4. **Comparisons:** Number of element comparisons (drives time complexity).
@@ -20,7 +20,7 @@ Sorting algorithms are evaluated based on:
 
 ## Bubble Sort
 
-Bubble Sort repeatedly steps through the list, compares adjacent elements, and swaps them if they are in the wrong order. With each pass, the largest unsorted element "bubbles" to its correct position at the end.
+Bubble Sort repeatedly steps through the list, compares adjacent elements, and swaps them if they are in the wrong order. With each pass, the largest unsorted element "bubbles" to its correct position at the end. I call it two-pronged slider sort.
 
 ### Bubble Sort Analysis
 
