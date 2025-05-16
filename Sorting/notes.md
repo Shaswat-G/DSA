@@ -406,6 +406,7 @@ Given `[8, 4, 5, 7, 1, 3, 6, 2]`:
 ## Counting Sort
 
 Counting Sort is a non-comparative integer sorting algorithm that sorts elements by counting the number of occurrences of each unique value. It is efficient for sorting integers within a known, limited range.
+Also called bucket sort. Used for sorting integers, characters, or fixed-length strings. All constant time algos can be used for large data sets.
 
 ### Counting Sort Analysis
 
