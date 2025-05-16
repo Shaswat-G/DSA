@@ -484,3 +484,294 @@ Radix Sort is a non-comparative sorting algorithm that sorts numbers by processi
 - Trades extra space and multiple passes for linear time in practice for many cases.
 
 ---
+
+
+# Searching:
+1. **Linear Search:** O(n) time complexity, O(1) space complexity.
+2. **Binary Search:** O(log n) time complexity, O(1) space complexity (requires sorted array).
+3. **Ternary Search:** O(log3 n) time complexity, O(1) space complexity (requires sorted array).
+4. **Exponential Search:** O(log n) time complexity, O(1) space complexity (requires sorted array).
+5. **Jump Search:** O(√n) time complexity, O(1) space complexity (requires sorted array).
+6. **Interpolation Search:** O(log log n) time complexity, O(1) space complexity (requires sorted array).
+7. **Fibonacci Search:** O(log n) time complexity, O(1) space complexity (requires sorted array).
+8. **Sublist Search:** O(n) time complexity, O(1) space complexity (requires sorted array).
+9. **Hashing:** O(1) average time complexity, O(n) space complexity (requires hash table).
+10. **Trie Search:** O(m) time complexity, O(n) space complexity (requires trie structure).
+11. **Suffix Array Search:** O(m log n) time complexity, O(n) space complexity (requires suffix array).
+12. **Suffix Tree Search:** O(m) time complexity, O(n) space complexity (requires suffix tree).
+13. **Bloom Filter Search:** O(k) time complexity, O(n) space complexity (requires hash functions).
+14. **KMP Search:** O(n + m) time complexity, O(m) space complexity (requires prefix table).
+15. **Rabin-Karp Search:** O(n + m) average time complexity, O(m) space complexity (requires hash function).
+16. **Boyer-Moore Search:** O(n + m) average time complexity, O(m) space complexity (requires bad character and good suffix tables).
+17. **Aho-Corasick Search:** O(n + m + z) time complexity, O(m) space complexity (requires trie structure).
+18. **Suffix Automaton Search:** O(n + m) time complexity, O(n) space complexity (requires suffix automaton).
+
+## Classical Search Algorithms
+
+### Linear Search
+**Description**: Sequentially checks each element until finding target or reaching end. Universal but inefficient.  
+**Analysis**: O(n) time, O(1) space. Best for small arrays or unsorted data where preprocessing isn't worthwhile.  
+```python
+def linear_search(arr, x):
+    for i in range(len(arr)):
+        if arr[i] == x: return i
+    return -1
+```
+**Key Points**: No preprocessing required; works on unsorted data; becomes inefficient as data size increases.
+
+### Binary Search
+**Description**: Repeatedly divides sorted array in half, eliminating half the remaining elements each time.  
+**Analysis**: O(log n) time, O(1) space. Optimal for medium to large sorted arrays with random access.  
+```python
+def binary_search(arr, x):
+    low, high = 0, len(arr)-1
+    while low <= high:
+        mid = (low + high)//2
+        if arr[mid] == x: return mid
+        elif arr[mid] < x: low = mid + 1
+        else: high = mid - 1
+    return -1
+```
+**Key Points**: Requires sorted array; logarithmic efficiency; handles large datasets well; optimal for most sorted array searches.
+
+### Jump Search
+**Description**: Jumps ahead by fixed steps (√n), then performs linear search in the block where element might exist.  
+**Analysis**: O(√n) time, O(1) space. Balances jump size to optimize between linear and binary search performance.  
+```python
+def jump_search(arr, x):
+    n = len(arr)
+    step = int(n**0.5)
+    prev, curr = 0, step
+    while curr < n and arr[curr] < x:
+        prev, curr = curr, curr + step
+    for i in range(prev, min(curr + 1, n)):
+        if arr[i] == x: return i
+    return -1
+```
+**Key Points**: Requires less memory than binary search; good for slightly expensive comparisons; works well on disk-based storage.
+
+### Interpolation Search
+**Description**: Estimates target position based on value distribution, making educated guesses about element location.  
+**Analysis**: O(log log n) time for uniform data, O(n) worst case. Outperforms binary search on uniformly distributed data.  
+```python
+def interpolation_search(arr, x):
+    low, high = 0, len(arr)-1
+    while low <= high and x >= arr[low] and x <= arr[high]:
+        pos = low + ((x - arr[low]) * (high - low)) // (arr[high] - arr[low])
+        if arr[pos] == x: return pos
+        elif arr[pos] < x: low = pos + 1
+        else: high = pos - 1
+    return -1
+```
+**Key Points**: Excels with uniform distributions; inefficient for skewed distributions; makes intelligent probes based on values.
+
+## String Searching Algorithms
+
+### KMP (Knuth-Morris-Pratt)
+**Description**: String-matching algorithm utilizing pattern's self-similarity to avoid redundant comparisons.  
+**Analysis**: O(n+m) time, O(m) space where n is text length, m is pattern length. Never re-examines characters in text.  
+```python
+def kmp_search(text, pattern):
+    m, n = len(pattern), len(text)
+    lps = [0] * m  # Longest proper prefix which is also suffix
+    # Compute LPS array
+    i, j = 1, 0
+    while i < m:
+        if pattern[i] == pattern[j]:
+            j += 1
+            lps[i] = j
+            i += 1
+        else:
+            if j != 0: j = lps[j-1]
+            else: lps[i], i = 0, i+1
+    # Search
+    i = j = 0
+    while i < n:
+        if pattern[j] == text[i]: i, j = i+1, j+1
+        if j == m: return i-j  # Pattern found
+        elif i < n and pattern[j] != text[i]:
+            if j != 0: j = lps[j-1]
+            else: i += 1
+    return -1
+```
+**Key Points**: Optimal for single pattern search; avoids backtracking in text; requires preprocessing pattern; faster than naive approaches.
+
+### Boyer-Moore
+**Description**: Scans pattern from right to left, using bad character and good suffix rules to skip characters.  
+**Analysis**: O(n/m) best case, O(nm) worst case. Often sublinear in practice, especially with large alphabets.  
+```python
+def boyer_moore(text, pattern):
+    # Simplified implementation
+    m, n = len(pattern), len(text)
+    if m == 0: return 0
+    
+    # Bad Character Heuristic
+    bad_char = {}
+    for i in range(m): 
+        bad_char[pattern[i]] = i
+    
+    s = 0  # s is shift of the pattern with respect to text
+    while s <= n - m:
+        j = m - 1
+        while j >= 0 and pattern[j] == text[s + j]: j -= 1
+        if j < 0: return s  # Pattern found
+        else: s += max(1, j - bad_char.get(text[s + j], -1))
+    return -1
+```
+**Key Points**: Excellent practical performance; more efficient with larger alphabets; complex preprocessing but powerful skipping rules.
+
+## Data Structure-Based Search
+
+### Hashing
+**Description**: Maps data to fixed-size values for direct access via hash table, enabling constant-time lookups.  
+**Analysis**: O(1) average time, O(n) space. Trades memory for speed, potential performance degradation with collisions.  
+```python
+class HashTable:
+    def __init__(self, size=101):
+        self.size = size
+        self.table = [None] * size
+        
+    def hash_function(self, key):
+        return hash(key) % self.size
+        
+    def insert(self, key, value):
+        index = self.hash_function(key)
+        if self.table[index] is None:
+            self.table[index] = []
+        self.table[index].append((key, value))
+        
+    def search(self, key):
+        index = self.hash_function(key)
+        if self.table[index] is None:
+            return None
+        for k, v in self.table[index]:
+            if k == key:
+                return v
+        return None
+```
+**Key Points**: Near-instant lookups; requires preprocessing; performance depends on hash function quality and load factor.
+
+### Trie Search
+**Description**: Tree structure where nodes represent characters, enabling efficient string operations and prefix searches.  
+**Analysis**: O(m) search time where m is key length; space-intensive but enables complex string operations.  
+```python
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+        
+    def insert(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+        
+    def search(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return node.is_end_of_word
+```
+**Key Points**: Excellent for dictionary operations; efficient prefix searches; uses more space than hashing; optimal for autocomplete.
+
+### Bloom Filter
+**Description**: Probabilistic data structure testing set membership with space efficiency at cost of false positives.  
+**Analysis**: O(k) time where k is hash function count; remarkably space-efficient; never has false negatives.  
+```python
+import mmh3  # MurmurHash3
+
+class BloomFilter:
+    def __init__(self, size, hash_count):
+        self.size = size
+        self.hash_count = hash_count
+        self.bit_array = [0] * size
+        
+    def add(self, item):
+        for i in range(self.hash_count):
+            index = mmh3.hash(item, i) % self.size
+            self.bit_array[index] = 1
+            
+    def contains(self, item):
+        for i in range(self.hash_count):
+            index = mmh3.hash(item, i) % self.size
+            if not self.bit_array[index]:
+                return False
+        return True  # May be false positive
+```
+**Key Points**: Ultimate space efficiency; allows configurable error rates; ideal for preprocessing or filtering; probabilistic nature.
+
+## Advanced Search Algorithms
+
+### Aho-Corasick
+**Description**: Algorithm for efficiently locating multiple patterns in text simultaneously using trie with failure links.  
+**Analysis**: O(n+m+z) time where z is match count; linear regardless of pattern count; outperforms repeated single-pattern searches.  
+```python
+class AhoCorasick:
+    def __init__(self):
+        self.root = {}
+        self.output = {}
+        self.failure = {}
+        
+    def add_pattern(self, pattern):
+        node = self.root
+        for char in pattern:
+            node = node.setdefault(char, {})
+        self.output[id(node)] = [pattern]
+    
+    def build_automaton(self):
+        queue = []
+        for k, v in self.root.items():
+            queue.append(v)
+            self.failure[id(v)] = self.root
+        while queue:
+            curr = queue.pop(0)
+            for char, node in curr.items():
+                queue.append(node)
+                state = self.failure[id(curr)]
+                while state != self.root and char not in state:
+                    state = self.failure[id(state)]
+                if char in state:
+                    self.failure[id(node)] = state[char]
+                else:
+                    self.failure[id(node)] = self.root
+                if id(self.failure[id(node)]) in self.output:
+                    if id(node) not in self.output:
+                        self.output[id(node)] = []
+                    self.output[id(node)].extend(self.output[id(self.failure[id(node)])])
+    
+    def search(self, text):
+        node = self.root
+        results = []
+        for i, char in enumerate(text):
+            while node != self.root and char not in node:
+                node = self.failure[id(node)]
+            if char in node:
+                node = node[char]
+            if id(node) in self.output:
+                for pattern in self.output[id(node)]:
+                    results.append((i - len(pattern) + 1, pattern))
+        return results
+```
+**Key Points**: Optimal for multiple pattern matching; outputs all matches in a single pass; used in intrusion detection systems.
+
+## Selection Framework
+
+**When to use which algorithm:**
+
+1. **Unsorted data with infrequent searches**: Linear search (simplicity wins)
+2. **Sorted numerical data**: Binary search (general purpose), Interpolation search (uniform distribution)
+3. **String pattern matching**: Boyer-Moore (single pattern), Aho-Corasick (multiple patterns)
+4. **Dictionary operations**: Trie (prefix operations), Hash table (exact lookups)
+5. **Memory-constrained environments**: Jump search, Binary search
+6. **Filtering massive datasets**: Bloom filter (preprocessing step), then exact methods
+7. **Full-text searching**: Suffix structures (arrays or trees)
+
+The optimal search algorithm balances preprocessing costs, query frequency, memory constraints, data characteristics, and specific query patterns.
