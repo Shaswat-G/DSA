@@ -49,4 +49,6 @@ Number of trees with maximum height h
 
 foe hiehght h
 min nodes = h+1
-max nodes = 2 power (h+1) - 1
+max nodes = 2 power (h+1) - 1 
+
+hi
