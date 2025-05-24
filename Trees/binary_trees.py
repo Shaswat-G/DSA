@@ -156,7 +156,7 @@ class BinaryTree:
 
 
 def main():
-    print("Hello Word!")
+    print("Hello World!")
 
     bt = BinaryTree()
 
