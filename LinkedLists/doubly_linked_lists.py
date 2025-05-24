@@ -134,7 +134,7 @@ class LinkedList:
 
     # @staticmethod
     # def merge(l1 : LinkedList, l2 : LinkedList) -> LinkedList:
-    #     # TODO : Implement merging
+    #       Implement merging
     #     pass
 
     # -- Pythonic methods
