@@ -21,6 +21,10 @@ Heap is not used for searching, as it does not maintain a sorted order like a bi
 To insert a new element into a heap, we follow these steps:
 1. Add the element to the next space in the array (maintaining the complete binary tree property).
 2. Perform an "up-heap" or "bubble-up" operation to restore the heap property. This involves comparing the newly added element with its parent and swapping them if the heap property is violated. Repeat this process until the heap property is restored.
+   
+Clearly, it takes at most log(n) time to insert an element into a heap, where n is the number of elements in the heap. This is because we may need to traverse from the newly added element up to the root, which is at most log(n) levels deep in a complete binary tree.
+
+We can also create a heap in place by inserting each element one by one, which will take O(n log n) time in total. However, there is a more efficient way to build a heap from an array in O(n) time using the "heapify" process.
 
 ## Delete in a heap:
 To delete the root element (maximum or minimum) from a heap, we follow these steps:
