@@ -137,16 +137,7 @@ class BinaryTree:
         else:
             return 0
 
-    def count_first_order_nodes(self, node:Node) -> int:
-        if node:
-            count_left = self.count_first_order_nodes(node.left)
-            count_right = self.count_first_order_nodes(node.right)
-            if (node.left and not node.right) or (node.right and not node.left):
-                return 1 + count_left + count_right
-            else:
-                return count_right + count_left
-        else:
-            return 0
+# Removed redundant definition of count_first_order_nodes
 
     def count_leaf_nodes(self, node:Node) -> int:
         if node:
