@@ -41,4 +41,40 @@ class Heap:
 
         return
 
+    def delete(self) -> int:
+
+        return_value = self.array[0]
+        self.array[0] = self.array[self.size-1]
+        self.size -=1
+        self.array.pop() 
+
+        index = 0
+
+        while (self.is_valid_index(self.left(index))):
+            
+            if (self.is_valid_index(self.right(index))):
+                right_child = self.array[self.right(index)]
+                left_child = self.array[self.left(index)]
+                
+                if (right_child > left_child):
+                    if self.array[index] < self.array[self.right(index)]:
+                        self.array[self.right(index)], self.array[index] = self.array[index], self.array[self.right(index)]
+                        index = self.right(index)
+                    else:
+                        break
+                else:
+                    if self.array[index] < self.array[self.left(index)]:
+                        self.array[self.left(index)], self.array[index] = self.array[index], self.array[self.left(index)]
+                        index = self.left(index)
+                    else:
+                        break
+            else:
+                if self.array[index] < self.array[self.left(index)]:
+                        self.array[self.left(index)], self.array[index] = self.array[index], self.array[self.left(index)]
+                        index = self.left(index)
+                else:
+                    break
+
+        return return_value
+
     # Pythonic methods

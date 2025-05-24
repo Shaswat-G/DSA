@@ -27,6 +27,7 @@ Clearly, it takes at most log(n) time to insert an element into a heap, where n 
 We can also create a heap in place by inserting each element one by one, which will take O(n log n) time in total. However, there is a more efficient way to build a heap from an array in O(n) time using the "heapify" process.
 
 ## Delete in a heap:
+From heap you can only delete the root element (maximum in max-heap, minimum in min-heap). Deleting any other element would violate the heap property, as it would not be possible to maintain the complete binary tree structure while ensuring the heap property.
 To delete the root element (maximum or minimum) from a heap, we follow these steps:
 1. Replace the root element with the last element in the heap.
 2. Remove the last element.
