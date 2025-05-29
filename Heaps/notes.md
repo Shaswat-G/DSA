@@ -34,7 +34,8 @@ To delete the root element (maximum or minimum) from a heap, we follow these ste
 3. Perform a "down-heap" or "bubble-down" operation to restore the heap property. This involves comparing the new root with its children and swapping it with the larger (or smaller) child if the heap property is violated. Repeat this process until the heap property is restored.
 
 ## Heap Sort:
-Heap sort is a comparison-based sorting algorithm that uses a binary heap data structure. The basic idea is to build a max-heap (or min-heap) from the input data, and then repeatedly extract the maximum (or minimum) element from the heap and rebuild the heap until all elements are sorted.
+Heap sort is a comparison-based sorting algorithm that uses a binary heap data structure. The basic idea is to build a max-heap (or min-heap) from the input data, and then repeatedly extract the maximum (or minimum) element from the heap and rebuild the heap until all elements are sorted. This is basically deleting the root element repeatedly. For ascending order, we can use a max-heap, and for descending order, we can use a min-heap.
+Heap sort has a time complexity of O(n log n) in the worst case, where n is the number of elements to be sorted. This is because building the heap takes O(n) time, and each extraction takes O(log n) time, and we perform this extraction n times.
 
 ## Heapify:
 Heapify is the process of converting a binary tree into a heap. This can be done in two ways:
