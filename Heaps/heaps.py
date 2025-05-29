@@ -34,7 +34,7 @@ class Heap:
 
         index = self.size-1
         parent_index = self.parent(index)
-        while (self.array[parent_index] < self.array[index]) and (self.is_valid_index(parent_index)):
+        while self.is_valid_index(parent_index) and self.array[parent_index] < self.array[index]:
             self.array[parent_index], self.array[index] = self.array[index], self.array[parent_index]
             index = parent_index
             parent_index = self.parent(index)
