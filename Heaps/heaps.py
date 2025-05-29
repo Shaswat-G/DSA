@@ -50,30 +50,16 @@ class Heap:
 
         index = 0
 
-        while (self.is_valid_index(self.left(index))):
-            
-            if (self.is_valid_index(self.right(index))):
-                right_child = self.array[self.right(index)]
-                left_child = self.array[self.left(index)]
-                
-                if (right_child > left_child):
-                    if self.array[index] < self.array[self.right(index)]:
-                        self.array[self.right(index)], self.array[index] = self.array[index], self.array[self.right(index)]
-                        index = self.right(index)
-                    else:
-                        break
-                else:
-                    if self.array[index] < self.array[self.left(index)]:
-                        self.array[self.left(index)], self.array[index] = self.array[index], self.array[self.left(index)]
-                        index = self.left(index)
-                    else:
-                        break
+        while self.is_valid_index(self.left(index)):
+            target_child = self.left(index)
+            if self.is_valid_index(self.right(index)) and self.array[self.right(index)] > self.array[self.left(index)]:
+                target_child = self.right(index)
+
+            if self.array[index] < self.array[target_child]:
+                self.array[target_child], self.array[index] = self.array[index], self.array[target_child]
+                index = target_child
             else:
-                if self.array[index] < self.array[self.left(index)]:
-                        self.array[self.left(index)], self.array[index] = self.array[index], self.array[self.left(index)]
-                        index = self.left(index)
-                else:
-                    break
+                break
 
         return return_value
 
