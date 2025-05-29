@@ -304,3 +304,100 @@ obj3 = MemoryDemo()  # Yet another memory location
 In a Singleton, the same memory address is returned every time after the first creation.
 
 The `__new__` method gives you complete control over object instantiation, which is why it's so powerful for patterns like Singleton, but it should be used carefully since it can make code behavior less predictable.
+
+
+The Builder Pattern is a creational design pattern that constructs complex objects step by step. It's particularly useful when you need to create objects with many optional parameters or when the construction process is complex and needs to be separated from the representation.
+What is the Builder Pattern?
+The Builder pattern allows you to construct complex objects by providing a fluent interface where you can set various properties and then build the final object. It separates the construction logic from the object itself.
+
+```Python
+class Product:
+    def __init__(self):
+        self.parts = []
+    
+    def add_part(self, part):
+        self.parts.append(part)
+    
+    def show(self):
+        return f"Product parts: {', '.join(self.parts)}"
+
+class Builder:
+    def __init__(self):
+        self.product = Product()
+    
+    def add_engine(self, engine_type):
+        self.product.add_part(f"Engine: {engine_type}")
+        return self  # Return self for method chaining
+    
+    def add_wheels(self, wheel_count):
+        self.product.add_part(f"Wheels: {wheel_count}")
+        return self
+    
+    def add_color(self, color):
+        self.product.add_part(f"Color: {color}")
+        return self
+    
+    def build(self):
+        return self.product
+
+# Usage with method chaining
+car = (Builder()
+       .add_engine("V8")
+       .add_wheels(4)
+       .add_color("Red")
+       .build())
+
+print(car.show())  # Product parts: Engine: V8, Wheels: 4, Color: Red
+```
+
+class Product:
+    def __init__(self):
+        self.parts = []
+    
+    def add_part(self, part):
+        self.parts.append(part)
+    
+    def show(self):
+        return f"Product parts: {', '.join(self.parts)}"
+
+class Builder:
+    def __init__(self):
+        self.product = Product()
+    
+    def add_engine(self, engine_type):
+        self.product.add_part(f"Engine: {engine_type}")
+        return self  # Return self for method chaining
+    
+    def add_wheels(self, wheel_count):
+        self.product.add_part(f"Wheels: {wheel_count}")
+        return self
+    
+    def add_color(self, color):
+        self.product.add_part(f"Color: {color}")
+        return self
+    
+    def build(self):
+        return self.product
+
+# Usage with method chaining
+car = (Builder()
+       .add_engine("V8")
+       .add_wheels(4)
+       .add_color("Red")
+       .build())
+
+print(car.show())  # Product parts: Engine: V8, Wheels: 4, Color: Red
+
+
+
+Benefits of Builder Pattern
+Readability: Method chaining makes code more readable than long constructor calls
+Flexibility: Easy to add new optional parameters without breaking existing code
+Validation: Can validate the object before building
+Immutability: Can create immutable objects step by step
+Complex Construction: Handles complex object creation logic cleanly
+When NOT to Use Builder
+Simple Objects: Don't overcomplicate simple object creation
+Few Parameters: If your object has only 2-3 parameters, a simple constructor is better
+No Optional Parameters: If all parameters are required, constructor is more straightforward
+The Builder pattern shines when you have complex objects with many optional parameters or when the construction process itself is complex. It's particularly popular in modern APIs and configuration libraries because it provides a clean, readable interface for object creation.
