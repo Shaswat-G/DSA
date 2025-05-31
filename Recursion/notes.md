@@ -96,4 +96,113 @@ Each example demonstrates how the input size is reduced in every recursive step.
 - Recognize recursive problems by their self-similar structure.
 - Practice with small, focused problems before tackling complex ones.
 
-Happy recursing!
+---
+
+### 8 Recognizing and Applying Recursion: Problem Patterns & Use Cases
+
+#### 1. Classic Problems Solvable with Recursion
+
+**1. Divide and Conquer Algorithms**  
+_Essential Idea:_ Break the problem into smaller subproblems, solve each recursively, and combine results.  
+_Recursion Use:_ Each call works on a smaller part (e.g., merge sort, quick sort, binary search).
+
+**2. Tree and Graph Traversals**  
+_Essential Idea:_ Visit all nodes in a hierarchical or connected structure.  
+_Recursion Use:_ Each call processes a node and recurses on its children or neighbors (e.g., preorder, inorder, postorder, DFS).
+
+**3. Backtracking/Combinatorial Generation**  
+_Essential Idea:_ Explore all possible configurations/choices, undoing choices as needed.  
+_Recursion Use:_ Each call makes a choice, recurses, and backtracks (e.g., permutations, combinations, N-Queens, Sudoku).
+
+**4. Dynamic Programming (Top-Down/Memoization)**  
+_Essential Idea:_ Solve overlapping subproblems recursively, caching results.  
+_Recursion Use:_ Each call solves a subproblem, stores result to avoid recomputation (e.g., Fibonacci, coin change, edit distance).
+
+**5. Mathematical Recurrences**  
+_Essential Idea:_ Problems defined by recurrence relations.  
+_Recursion Use:_ Each call computes based on smaller values (e.g., factorial, Fibonacci, catalan numbers).
+
+**6. String and Array Manipulation**  
+_Essential Idea:_ Process or transform sequences by handling one element and recursing on the rest.  
+_Recursion Use:_ Each call works on a smaller slice (e.g., reverse string, check palindrome, sum array).
+
+**7. Path Finding and Counting**  
+_Essential Idea:_ Count or enumerate all possible paths/ways to reach a goal.  
+_Recursion Use:_ Each call explores a possible move (e.g., grid paths, climbing stairs, word break).
+
+**8. Subset/Subset Sum/Power Set Problems**  
+_Essential Idea:_ Generate all subsets or combinations.  
+_Recursion Use:_ Each call includes/excludes an element (e.g., subsets, combination sum).
+
+**9. Constructive Recursion (Building Structures)**  
+_Essential Idea:_ Build complex structures recursively (e.g., binary trees, expression trees).  
+_Recursion Use:_ Each call constructs a part and combines results.
+
+**10. Game/Simulation Problems**  
+_Essential Idea:_ Simulate all possible moves or outcomes.  
+_Recursion Use:_ Each call represents a game state (e.g., minimax, tic-tac-toe, word ladder).
+
+**11. Linked List Recursion**  
+_Essential Idea:_ Process nodes recursively (e.g., reverse, merge, detect cycle).  
+_Recursion Use:_ Each call processes a node and recurses on next.
+
+**12. Expression Evaluation/Parsing**  
+_Essential Idea:_ Parse or evaluate nested expressions.  
+_Recursion Use:_ Each call processes a subexpression (e.g., arithmetic expression parser).
+
+**13. Flood Fill/Connected Components**  
+_Essential Idea:_ Fill or mark all connected regions.  
+_Recursion Use:_ Each call marks a cell and recurses on neighbors.
+
+**14. Recursion with Multiple Parameters/States**  
+_Essential Idea:_ Track multiple changing variables (e.g., DP with i, j, k).  
+_Recursion Use:_ Each call represents a unique state.
+
+**15. Recursion with Pruning/Branch and Bound**  
+_Essential Idea:_ Cut off unpromising branches early.  
+_Recursion Use:_ Each call checks constraints before recursing (e.g., N-Queens, subset sum with early exit).
+
+#### 2. Real-World & Interview/LeetCode Recursion Problems
+
+- **Factorial** (classic): Direct recurrence.
+- **Fibonacci Number** (LeetCode 509): Recurrence, memoization.
+- **Climbing Stairs** (LeetCode 70): Count paths, DP.
+- **Merge Sort/Quick Sort** (classic): Divide and conquer.
+- **Binary Search** (classic): Halve array recursively.
+- **Permutations/Combinations** (LeetCode 46, 77): Backtracking.
+- **Subsets/Power Set** (LeetCode 78): Include/exclude recursion.
+- **Generate Parentheses** (LeetCode 22): Backtracking.
+- **N-Queens** (LeetCode 51): Backtracking with pruning.
+- **Word Search** (LeetCode 79): DFS recursion.
+- **Sudoku Solver** (LeetCode 37): Backtracking.
+- **Letter Combinations of a Phone Number** (LeetCode 17): Backtracking.
+- **Restore IP Addresses** (LeetCode 93): Backtracking.
+- **Palindrome Partitioning** (LeetCode 131): Backtracking.
+- **Reverse Linked List** (LeetCode 206): Recursive pointer manipulation.
+- **Merge Two Sorted Lists** (LeetCode 21): Recursive merge.
+- **Maximum Depth of Binary Tree** (LeetCode 104): Tree recursion.
+- **Balanced Binary Tree** (LeetCode 110): Tree recursion.
+- **Diameter of Binary Tree** (LeetCode 543): Tree recursion.
+- **Same Tree/Symmetric Tree** (LeetCode 100, 101): Tree recursion.
+- **Path Sum** (LeetCode 112): Tree recursion.
+- **Flatten Binary Tree to Linked List** (LeetCode 114): Tree recursion.
+- **Construct Binary Tree from Traversals** (LeetCode 105, 106): Recursive construction.
+- **Word Break** (LeetCode 139): Recursion + memoization.
+- **Coin Change** (LeetCode 322): Recursion + memoization.
+- **Edit Distance** (LeetCode 72): Recursion + memoization.
+- **Flood Fill** (LeetCode 733): DFS recursion.
+- **Number of Islands** (LeetCode 200): DFS recursion.
+- **Combination Sum** (LeetCode 39): Backtracking.
+- **All Paths From Source to Target** (LeetCode 797): DFS recursion.
+- **Unique Binary Search Trees** (LeetCode 96): Catalan recurrence.
+- **Decode Ways** (LeetCode 91): Recursion + memoization.
+- **House Robber** (LeetCode 198): Recursion + memoization.
+- **Minimum Path Sum** (LeetCode 64): Recursion + memoization.
+- **Scramble String** (LeetCode 87): Recursion + memoization.
+- **Interleaving String** (LeetCode 97): Recursion + memoization.
+- **Regular Expression Matching** (LeetCode 10): Recursion + memoization.
+- **Wildcard Matching** (LeetCode 44): Recursion + memoization.
+
+_This list covers all classic and modern recursion-based problems. If a problem can be defined in terms of smaller subproblems, involves exploring all possibilities, or has a natural divide-and-conquer structure, think of recursion!_
+
+---
