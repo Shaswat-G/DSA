@@ -151,3 +151,16 @@ However, clients must be aware of different strategies and understand when to us
 The pattern works best when you have multiple algorithms for the same task, when algorithms change frequently, or when you want to avoid exposing complex, algorithm-specific data structures to clients. It's particularly valuable in systems where algorithm choice depends on runtime conditions, user preferences, or environmental factors.
 
 The key is to identify true algorithmic variations rather than simple parameter differences - if behaviors differ only in values, consider parameterization instead of separate strategy classes.
+
+
+## Observer Pattern:
+Allows one object to be notified about changes in another object. It is a behavioral design pattern that defines a one-to-many dependency between objects so that when one object changes state, all its dependents are notified and updated automatically. It has a subscription mechanism which allows multiple observer objects to listen and react to events.
+
+**Problem Addressed**: The Observer pattern addresses the problem of maintaining consistency between related objects without tightly coupling them. It allows for a flexible and dynamic way to notify multiple objects about changes in another object.
+
+
+### Key Components:
+1. **Subject**: The object being observed. It maintains a list of observeers and provides methods to add, remove and notify observers.
+2. **Observer Interface**: An interface that defines the method(s) that observers must implement to receive notifications and an update method.
+3.  **Concrete Observer**: Classes that implement the observer interface and define how they respond to notifications from the subject.
+4.  Client: The code that creates the subject and observers, and establishes the relationships between them.
