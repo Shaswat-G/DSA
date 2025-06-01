@@ -47,3 +47,22 @@ Each decorator wraps an object and adds its own behavior while delegating the co
    - Maintain the same interface as the component
    - Be composable with other decorators
 
+### Common Use Cases:
+1. API Simplification: Wrapping complex third-party libraries or APIs with simpler, domain-specific interfaces.
+2. Legacy System Integration: Providing modern interfaces to old, complex systems without modifying the underlying code.
+3. Microservice Communication: Creating unified interfaces that coordinate calls across multiple microservices.
+4. Database Operations: Simplifying complex database operations involving multiple tables, transactions, and validation rules.
+5. Framework Integration: Hiding the complexity of frameworks or libraries behind application-specific interfaces.
+6. System Startup/Shutdown: Coordinating the initialization and cleanup of multiple interdependent components.
+
+
+## Facade Pattern:
+The facade pattern is a structural pattern that provides a very simple interface (high-level) to the client and internally orchestrates the complex interactions of internal subsystems. It hides this complexity from the client (demeter principle of least knowledge). It is similar to hotel concierge service, where the client interacts with a single point of contact (the facade) without needing to coordinate with housekeeping, maintenance, kitchen staff, and security.
+
+### Common Use Cases
+1. API Simplification: Wrapping complex third-party libraries or APIs with simpler, domain-specific interfaces.
+2. Legacy System Integration: Providing modern interfaces to old, complex systems without modifying the underlying code.
+3. Microservice Communication: Creating unified interfaces that coordinate calls across multiple microservices.
+4. Database Operations: Simplifying complex database operations involving multiple tables, transactions, and validation rules.
+5. Framework Integration: Hiding the complexity of frameworks or libraries behind application-specific interfaces.
+6. System Startup/Shutdown: Coordinating the initialization and cleanup of multiple interdependent components.
