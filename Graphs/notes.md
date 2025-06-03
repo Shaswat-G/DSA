@@ -161,6 +161,11 @@ def has_path(graph, src, dest):
                 q.append(u)
     return False
 ```
+## Grid problems:
+Problems like "Number of Islands" can be solved using BFS/DFS on a grid by treating each cell as a vertex and adjacent cells as edges. Shortest path on unweighted grids can also be solved using BFS.
+
+
+
 
 ## 6. Common MCQ/Interview Points
 
