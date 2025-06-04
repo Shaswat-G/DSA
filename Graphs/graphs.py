@@ -4,9 +4,7 @@ from collections import deque
 class Graph:
     def __init__(self, num_vertices):
         self.num_vertices = num_vertices
-        self.adj_matrix = [
-            [0 for _ in range(num_vertices)] for _ in range(num_vertices)
-        ]
+        self.adj_matrix = [[0 for _ in range(num_vertices)] for _ in range(num_vertices)]
 
     def add_edge(self, u, v):
         self.adj_matrix[u][v] = 1
