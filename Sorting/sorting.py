@@ -53,29 +53,19 @@ class Sorter:
 
         while True:
             # Move the left pointer to the right wherever the element is less than the pivot
-            while (left_pointer <= right_pointer) and (
-                self.array[left_pointer] < pivot_element
-            ):
+            while (left_pointer <= right_pointer) and (self.array[left_pointer] < pivot_element):
                 left_pointer += 1
             # Move the right pointer to the left wherever the element is greater than the pivot
-            while (left_pointer <= right_pointer) and (
-                self.array[right_pointer] > pivot_element
-            ):
+            while (left_pointer <= right_pointer) and (self.array[right_pointer] > pivot_element):
                 right_pointer -= 1
 
             if left_pointer < right_pointer:
-                self.array[left_pointer], self.array[right_pointer] = (
-                    self.array[right_pointer],
-                    self.array[left_pointer],
-                )
+                self.array[left_pointer], self.array[right_pointer] = (self.array[right_pointer], self.array[left_pointer])
             else:
                 # We have found the partition index
                 break
         # Swap the pivot element with the right pointer
-        self.array[low], self.array[right_pointer] = (
-            self.array[right_pointer],
-            self.array[low],
-        )
+        self.array[low], self.array[right_pointer] = (self.array[right_pointer], self.array[low])
 
         return right_pointer
 
@@ -110,9 +100,7 @@ class Sorter:
         return merged_array
 
     def merge_in_place(self, low: int, mid: int, high: int) -> None:
-        merged_array = self.merge_arrays(
-            self.array[low : mid + 1], self.array[mid + 1 : high + 1]
-        )
+        merged_array = self.merge_arrays(self.array[low : mid + 1], self.array[mid + 1 : high + 1])
 
         m_index = 0
         for index in range(low, high + 1):
@@ -138,9 +126,7 @@ class Sorter:
             sub_array_size = 2 * sub_array_size
         return None
 
-    def recursive_merge_sort(
-        self, low: int, high: int
-    ) -> None:  # Top down since recursion
+    def recursive_merge_sort(self, low: int, high: int) -> None:  # Top down since recursion
         if low == high:
             # array of 1 element => sorted
             return None
