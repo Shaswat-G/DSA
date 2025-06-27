@@ -26,9 +26,7 @@ print("\n--- 2. Accessing Elements ---")
 print(f"Student's name: {student['name']}")
 print(f"Student's age: {student.get('age')}")
 print(f"Student's address (using get): {student.get('address')}")
-print(
-    f"Student's address (using get with default): {student.get('address', 'Not specified')}"
-)
+print(f"Student's address (using get with default): {student.get('address', 'Not specified')}")
 
 print("\n--- 3. Adding and Modifying Elements ---")
 student["major"] = "Computer Science"
