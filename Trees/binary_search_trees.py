@@ -186,11 +186,11 @@ class BinaryTree:
                     return sub_root.left
                 else:
                     # both children exist
-                    # find the next pre-order element to replace it with.
+                    # find the next in-order element to replace it with.
                     current = sub_root.right
                     while current.left:
                         current = current.left
-                    # current will have the next pre-order element. => swap and delete
+                    # current will have the next in-order element. => swap and delete
                     sub_root.data = current.data
                     sub_root.right = delete(sub_root.right, current.data)
         
