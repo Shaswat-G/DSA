@@ -53,6 +53,9 @@ A **BST** is a binary tree with the property:
 - **Inorder:** Left → Root → Right (yields sorted order for BST)
 - **Postorder:** Left → Right → Root
 - **Level Order:** Breadth-first, level by level
+- Pre-order, post-order and in-order alone cannot uniquely identify a binary tree (catalan number of possibilites).
+- A combination of pre-order and post-order also cannot uniquely identify a binary tree, the exact number is not known.
+- However, give an inorder, any of post or pre can uniquely identify a binary tree. Why? splitting of nodes in the left and right subtree is unique.
 
 ## 7. Common Operations
 
@@ -70,6 +73,8 @@ A **BST** is a binary tree with the property:
 - **Database indexing (B/B+ trees)**
 - **Efficient searching, range queries (BSTs)**
 
+## 9. Counting Nodes:
+- Usually we do post order style traversal to count nodes with some conditional recursion - left, right and root.
 ---
 
 ## Recognizing and Applying Binary Trees & BSTs: Problem Patterns & Use Cases
