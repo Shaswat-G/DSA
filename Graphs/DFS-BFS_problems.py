@@ -185,7 +185,7 @@ def has_cycle_undirected(graph):
     vertices = list(graph.keys())
     visited = {vertex: False for vertex in vertices}
 
-    for vertex in vertices:
+    for vertex in vertices:      # the main loop tries to work on all components of a graph by initializing dfs from every unvisited vertex.
         if not visited[vertex]:
             if dfs(vertex, -1, visited):
                 return True
@@ -195,12 +195,30 @@ def has_cycle_undirected(graph):
 
 def has_cycle_directed(graph):
     """
-    Detect cycle in a directed graph using DFS.
+    Detect cycle in a directed graph using DFS and recursion stack.
     :param graph: Dict[int, List[int]]
     :return: bool
     """
-    # ...implement cycle detection for directed graph...
-    pass
+    visited = set()   # tracking global visits
+    rec_stack = set() # tracking current dfs path
+
+    def dfs(node):
+        visited.add(node)
+        rec_stack.add(node)
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                if dfs(neighbor):
+                    return True
+            elif neighbor in rec_stack:
+                return True
+        rec_stack.remove(node)  # super critical once all unvisited neightbors are dfssed, and not cycle detected, we have to remove this node.
+        return False
+
+    for node in graph:
+        if node not in visited:
+            if dfs(node):
+                return True
+    return False
 
 
 # ---------------------------
@@ -330,6 +348,100 @@ def main():
         "All Paths Sum:", all_paths_sum(root, target_sum)
     )  # Expected: [[5,4,11,2],[5,8,4,5]]
 
+    # Test for shortest_path_unweighted
+    unweighted_graph = {
+        0: [1, 2],
+        1: [0, 3, 4],
+        2: [0, 4],
+        3: [1, 5],
+        4: [1, 2, 5],
+        5: [3, 4],
+    }
+    print(
+        "Shortest Path (Unweighted):",
+        shortest_path_unweighted(unweighted_graph, 0, 5),
+    )  # Expected: 3
+
+    # Test for path_exists
+    print("Path Exists:", path_exists(unweighted_graph, 0, 5))  # Expected: True
+    print("Path Exists:", path_exists(unweighted_graph, 0, 6))  # Expected: False
+
+    # Test for clone_graph
+    original_graph = {0: [1, 2], 1: [0, 2], 2: [0, 1]}
+    cloned_graph = clone_graph(original_graph)
+    print("Cloned Graph:", cloned_graph)  # Expected: Deep copy of original_graph
+
 
 if __name__ == "__main__":
     test()
+
+
+def shortest_path_unweighted(graph, start, end):
+    """
+    Find the shortest path length between start and end in an unweighted graph using BFS.
+    :param graph: Dict[int, List[int]]
+    :param start: int
+    :param end: int
+    :return: int (length of shortest path, or -1 if not reachable)
+    """
+    from collections import deque
+
+    visited = set([start])
+    q = deque([(start, 0)])
+    while q:
+        node, dist = q.popleft()
+        if node == end:
+            return dist
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                q.append((neighbor, dist + 1))
+    return -1
+
+
+def path_exists(graph, start, end):
+    """
+    Check if a path exists between start and end using BFS.
+    :param graph: Dict[int, List[int]]
+    :param start: int
+    :param end: int
+    :return: bool
+    """
+    from collections import deque
+
+    visited = set([start])
+    q = deque([start])
+    while q:
+        node = q.popleft()
+        if node == end:
+            return True
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                q.append(neighbor)
+    return False
+
+
+def clone_graph(graph):
+    """
+    Clone an undirected graph given as adjacency list.
+    :param graph: Dict[int, List[int]]
+    :return: Dict[int, List[int]] (deep copy)
+    """
+    from collections import deque, defaultdict
+
+    if not graph:
+        return {}
+    cloned = defaultdict(list)
+    visited = set()
+    q = deque([next(iter(graph))])
+    while q:
+        node = q.popleft()
+        if node in visited:
+            continue
+        visited.add(node)
+        for neighbor in graph[node]:
+            cloned[node].append(neighbor)
+            if neighbor not in visited:
+                q.append(neighbor)
+    return dict(cloned)
