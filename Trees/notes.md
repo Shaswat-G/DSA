@@ -75,6 +75,12 @@ A **BST** is a binary tree with the property:
 
 ## 9. Counting Nodes:
 - Usually we do post order style traversal to count nodes with some conditional recursion - left, right and root.
+- Inversion of binary tree is simple, just swap left and right children recursively.
+- Maximum depth of a binary tree is the longest path from root to leaf = height of the tree = 1 + max(depth of left subtree, depth of right subtree).
+- The height of every node in a binary tree can be calculated as max(left height, right height) + 1.
+- The diameter of a binary tree is defined as the length of the longest path between any two nodes within the tree. The path does not necessarily have to pass through the root.
+- The maximum length of path that passes through a given node is the sum of the left height and right height of the node. => max diameter = max(max_paths of all nodes)
+- While counting edges, the base case is returning -1 so that when you define left heights and right heights, you can add 1 to the sum of left and right heights to get the number of edges (0 for lead nodes.)
 ---
 
 ## Recognizing and Applying Binary Trees & BSTs: Problem Patterns & Use Cases
