@@ -156,6 +156,41 @@ def min_path_sum(grid : List[List[int]]) -> int:
 
 # 5. Triangle
 
+def min_path_sum_in_triangle_grid(grid : List[List[int]]) -> int:
+
+    # Edge Case:
+    if not grid or not grid[0]:
+        return -1
+
+    # House Keeping
+    rows = len(grid)
+    # cols in the ith row (0-indexing) = i+1
+
+    # Approach: Recursion to try out all possible paths and track minimum sum to bottom.
+    # Memoization for optimizing time complexity from exponential to linear by avoiding recomputations.
+
+    def rec_path_sum_from_vertex_to(row : int, col : int, grid : List[List[int]], path_grid: List[List[int]]) -> int:
+        # Base Case
+        if row < 0 or col <0:
+            return float("inf")
+
+        if path_grid[row][col] != -1:
+            return path_grid[row][col]
+
+        # Recursive Case
+        above_path_cost = rec_path_sum_from_vertex_to(row-1,col,grid,path_grid) if (row > 0 and col<row) else float("inf")
+        diag_path_cost = rec_path_sum_from_vertex_to(row-1,col-1,grid,path_grid) if (row > 0 and col>0) else float("inf")
+        path_grid[row][col] = grid[row][col] + min(above_path_cost, diag_path_cost)
+        return path_grid[row][col]
+
+    path_grid = []
+    for row in range(rows):
+        path_grid.append([-1 for _ in range(row+1)])
+    path_grid[0][0] = grid[0][0]
+
+    rec_path_sum_from_vertex_to(rows - 1, rows - 1, grid, path_grid)
+    return min(path_grid[-1])
+
 # 6. Multiple Start points
 
 
@@ -173,3 +208,10 @@ if __name__ == "__main__":
         [4, 2, 1]
     ]
     print(f"Min path sum in grid: {min_path_sum(min_path_grid)}")
+    triangle_grid = [
+        [2],
+        [3, 4],
+        [6, 5, 7],
+        [4, 1, 8, 3]
+    ]
+    print(f"Min path sum for Triangle grid: {min_path_sum_in_triangle_grid(triangle_grid)}")
