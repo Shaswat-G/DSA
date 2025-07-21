@@ -122,6 +122,35 @@ def count_paths_with_obstacles(grid : List[List[int]]) -> int:
     return rec_paths_from_origin_to(rows-1, cols-1, grid, path_grid)
 
 # 3. Min Path Sum
+def min_path_sum(grid : List[List[int]]) -> int:
+
+    # Edge Case:
+    if not grid or not grid[0]:
+        return 0
+
+    # House Keeeping:
+    rows, cols = len(grid), len(grid[0])
+
+    # Approach : Recursively try all possible paths and keep track of the minimum.
+    # Optimize for time by using memoization (avoiding recomputes)
+
+    def rec_path_sum_from_origin_to(row: int, col: int, grid: List[List[int]], min_cost_grid : List[List[int]]) -> int:
+        # Base Case:
+        if row < 0 or col < 0:
+            return float("inf")
+
+        if min_cost_grid[row][col] != -1:
+            return min_cost_grid[row][col]
+
+        # Recursive Case:
+        above_path = rec_path_sum_from_origin_to(row-1, col, grid, min_cost_grid) if (row>0) else float("inf")
+        left_path = rec_path_sum_from_origin_to(row, col-1, grid, min_cost_grid) if (col>0) else float("inf")
+        min_cost_grid[row][col] = grid[row][col] + min(above_path, left_path)
+        return min_cost_grid[row][col]
+
+    min_cost_grid = [[-1 for _ in range(cols)] for _ in range(rows)]
+    min_cost_grid[0][0] = grid[0][0]
+    return rec_path_sum_from_origin_to(rows - 1, cols - 1, grid, min_cost_grid)
 
 # 4. Max path sum with condition
 
@@ -137,3 +166,10 @@ if __name__ == "__main__":
     print(f"Unique paths in a {m}x{n} grid: {count_unique_paths_tabl(m, n)}")
     print(f"Unique paths in a {m}x{n} grid: {count_unique_paths_tabl_with_so(m, n)}")
     print(f"Unique paths in a {m}x{n} grid: {count_paths_with_obstacles([[1,1,1],[1,-1,1],[1,1,1]])}")
+
+    min_path_grid = [
+        [1, 3, 1],
+        [1, 5, 1],
+        [4, 2, 1]
+    ]
+    print(f"Min path sum in grid: {min_path_sum(min_path_grid)}")
