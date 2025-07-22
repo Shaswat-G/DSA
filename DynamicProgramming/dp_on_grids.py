@@ -85,7 +85,8 @@ def count_unique_paths_tabl_with_so(m: int, n: int) -> int:
 
 # 2. Count paths with obstacles
 
-def count_paths_with_obstacles(grid : List[List[int]]) -> int:
+
+def count_paths_with_obstacles(grid: List[List[int]]) -> int:
 
     # Edge Cases:
     if not grid or not grid[0]:
@@ -98,14 +99,16 @@ def count_paths_with_obstacles(grid : List[List[int]]) -> int:
     # Recursive Solution with memoization to avoid redundant recomputations.
     # Approach : Uniq paths to x,y = 1*uniq paths to x-1, y + 1* uniq_paths to x, y-1, except when the sources are obstacles.
 
-    def rec_paths_from_origin_to(row : int, col : int, grid : List[List[int]], path_grid : List[List[int]]) -> int:
+    def rec_paths_from_origin_to(
+        row: int, col: int, grid: List[List[int]], path_grid: List[List[int]]
+    ) -> int:
         # Base Case:
         if row == 0 and col == 0:
             return 1
 
         if row < 0 or col < 0:
             return 0
-        
+
         if grid[row][col] == -1:
             return 0
 
@@ -113,16 +116,21 @@ def count_paths_with_obstacles(grid : List[List[int]]) -> int:
             return path_grid[row][col]
 
         # Recursive Case:
-        above_paths = rec_paths_from_origin_to(row-1,col, grid, path_grid) if (row > 0) else 0
-        left_paths = rec_paths_from_origin_to(row,col-1, grid, path_grid) if (col > 0) else 0
+        above_paths = (
+            rec_paths_from_origin_to(row - 1, col, grid, path_grid) if (row > 0) else 0
+        )
+        left_paths = (
+            rec_paths_from_origin_to(row, col - 1, grid, path_grid) if (col > 0) else 0
+        )
         path_grid[row][col] = above_paths + left_paths
         return path_grid[row][col]
 
     path_grid = [[-1 for _ in range(cols)] for _ in range(rows)]
-    return rec_paths_from_origin_to(rows-1, cols-1, grid, path_grid)
+    return rec_paths_from_origin_to(rows - 1, cols - 1, grid, path_grid)
+
 
 # 3. Min Path Sum
-def min_path_sum(grid : List[List[int]]) -> int:
+def min_path_sum(grid: List[List[int]]) -> int:
 
     # Edge Case:
     if not grid or not grid[0]:
@@ -134,7 +142,9 @@ def min_path_sum(grid : List[List[int]]) -> int:
     # Approach : Recursively try all possible paths and keep track of the minimum.
     # Optimize for time by using memoization (avoiding recomputes)
 
-    def rec_path_sum_from_origin_to(row: int, col: int, grid: List[List[int]], min_cost_grid : List[List[int]]) -> int:
+    def rec_path_sum_from_origin_to(
+        row: int, col: int, grid: List[List[int]], min_cost_grid: List[List[int]]
+    ) -> int:
         # Base Case:
         if row < 0 or col < 0:
             return float("inf")
@@ -143,8 +153,16 @@ def min_path_sum(grid : List[List[int]]) -> int:
             return min_cost_grid[row][col]
 
         # Recursive Case:
-        above_path = rec_path_sum_from_origin_to(row-1, col, grid, min_cost_grid) if (row>0) else float("inf")
-        left_path = rec_path_sum_from_origin_to(row, col-1, grid, min_cost_grid) if (col>0) else float("inf")
+        above_path = (
+            rec_path_sum_from_origin_to(row - 1, col, grid, min_cost_grid)
+            if (row > 0)
+            else float("inf")
+        )
+        left_path = (
+            rec_path_sum_from_origin_to(row, col - 1, grid, min_cost_grid)
+            if (col > 0)
+            else float("inf")
+        )
         min_cost_grid[row][col] = grid[row][col] + min(above_path, left_path)
         return min_cost_grid[row][col]
 
@@ -152,11 +170,13 @@ def min_path_sum(grid : List[List[int]]) -> int:
     min_cost_grid[0][0] = grid[0][0]
     return rec_path_sum_from_origin_to(rows - 1, cols - 1, grid, min_cost_grid)
 
+
 # 4. Max path sum with condition
 
 # 5. Triangle
 
-def min_path_sum_in_triangle_grid(grid : List[List[int]]) -> int:
+
+def min_path_sum_in_triangle_grid(grid: List[List[int]]) -> int:
 
     # Edge Case:
     if not grid or not grid[0]:
@@ -169,29 +189,43 @@ def min_path_sum_in_triangle_grid(grid : List[List[int]]) -> int:
     # Approach: Recursion to try out all possible paths and track minimum sum to bottom.
     # Memoization for optimizing time complexity from exponential to linear by avoiding recomputations.
 
-    def rec_path_sum_from_vertex_to(row : int, col : int, grid : List[List[int]], path_grid: List[List[int]]) -> int:
+    def rec_path_sum_from_vertex_to(
+        row: int, col: int, grid: List[List[int]], path_grid: List[List[int]]
+    ) -> int:
         # Base Case
-        if row < 0 or col <0:
+        if row < 0 or col < 0:
             return float("inf")
 
         if path_grid[row][col] != -1:
             return path_grid[row][col]
 
         # Recursive Case
-        above_path_cost = rec_path_sum_from_vertex_to(row-1,col,grid,path_grid) if (row > 0 and col<row) else float("inf")
-        diag_path_cost = rec_path_sum_from_vertex_to(row-1,col-1,grid,path_grid) if (row > 0 and col>0) else float("inf")
+        above_path_cost = (
+            rec_path_sum_from_vertex_to(row - 1, col, grid, path_grid)
+            if (row > 0 and col < row)
+            else float("inf")
+        )
+        diag_path_cost = (
+            rec_path_sum_from_vertex_to(row - 1, col - 1, grid, path_grid)
+            if (row > 0 and col > 0)
+            else float("inf")
+        )
         path_grid[row][col] = grid[row][col] + min(above_path_cost, diag_path_cost)
         return path_grid[row][col]
 
     path_grid = []
     for row in range(rows):
-        path_grid.append([-1 for _ in range(row+1)])
+        path_grid.append([-1 for _ in range(row + 1)])
     path_grid[0][0] = grid[0][0]
 
-    rec_path_sum_from_vertex_to(rows - 1, rows - 1, grid, path_grid)
+    for i in range(len(path_grid[-1])):
+        rec_path_sum_from_vertex_to(rows - 1, rows - 1 - i, grid, path_grid)
     return min(path_grid[-1])
 
-# 6. Multiple Start points
+
+# 6. Maximum path sum from first row to last row
+def max_path_sum(grid : List[List[int]]) -> int:
+    pass
 
 
 if __name__ == "__main__":
@@ -202,16 +236,8 @@ if __name__ == "__main__":
     print(f"Unique paths in a {m}x{n} grid: {count_unique_paths_tabl_with_so(m, n)}")
     print(f"Unique paths in a {m}x{n} grid: {count_paths_with_obstacles([[1,1,1],[1,-1,1],[1,1,1]])}")
 
-    min_path_grid = [
-        [1, 3, 1],
-        [1, 5, 1],
-        [4, 2, 1]
-    ]
+    min_path_grid = [[1, 3, 1], [1, 5, 1], [4, 2, 1]]
     print(f"Min path sum in grid: {min_path_sum(min_path_grid)}")
-    triangle_grid = [
-        [2],
-        [3, 4],
-        [6, 5, 7],
-        [4, 1, 8, 3]
-    ]
+    print(f"Max path sum in grid: {max_path_sum(min_path_grid)}")
+    triangle_grid = [[2], [3, 4], [6, 5, 7], [4, 1, 8, 3]]
     print(f"Min path sum for Triangle grid: {min_path_sum_in_triangle_grid(triangle_grid)}")
