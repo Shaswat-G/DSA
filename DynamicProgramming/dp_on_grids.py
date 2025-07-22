@@ -449,7 +449,9 @@ def cherry_pickup_ninja_friends(grid: List[List[int]]) -> int:
         if col1 == col2:
             max_grid[row][col1][col2] = grid[row][col1] + max_from_above
         else:
-            max_grid[row][col1][col2] = grid[row][col1] + grid[row][col2] + max_from_above
+            max_grid[row][col1][col2] = (
+                grid[row][col1] + grid[row][col2] + max_from_above
+            )
 
         return max_grid[row][col1][col2]
 
@@ -465,10 +467,68 @@ def cherry_pickup_ninja_friends(grid: List[List[int]]) -> int:
     max_cherries = 0
     for end_col1 in range(cols):
         for end_col2 in range(cols):
-            cherries = rec_max_path_sum(rows - 1, end_col1, end_col2, directions, grid, max_grid)
+            cherries = rec_max_path_sum(
+                rows - 1, end_col1, end_col2, directions, grid, max_grid
+            )
             max_cherries = max(max_cherries, cherries)
 
     return max_cherries
+
+
+def cherry_pickup_ninja_friends_tab(grid: List[List[int]]) -> int:
+    # Edge Case:
+    if not grid or not grid[0]:
+        return 0
+
+    # House Keeping:
+    rows, cols = len(grid), len(grid[0])
+
+    # Approach: Convert the recursive solution to tabulation (bottom-up DP)
+    # Key insight: Fill the 3D DP table from row 0 to row (rows-1)
+    # For each row, consider all possible (col1, col2) combinations
+
+    # TODO: Initialize 3D DP table
+    # dp[row][col1][col2] = max cherries from (0,0)+(0,cols-1) to (row,col1)+(row,col2)
+    # Hint: Use a 3D array or dict structure similar to memoization version
+    dp = {}
+    for row in range(rows):
+        dp[row] = [[float("-inf") for _ in range(cols)] for _ in range(cols)]
+
+    # TODO: Base case - fill row 0
+    # Only dp[0][0][cols-1] should have the initial value (grid[0][0] + grid[0][cols-1])
+    # All other dp[0][col1][col2] combinations should be -infinity (invalid starting positions)
+    dp[0][0][cols - 1] = grid[0][0] + grid[0][cols - 1]
+
+    # TODO: Fill remaining rows using tabulation
+    # For row = 1 to rows-1:
+    #   For each col1 in range(cols):
+    #     For each col2 in range(cols):
+    #       Try all 9 combinations of previous moves (delta1, delta2 in [-1,0,1])
+    #       dp[row][col1][col2] = current_cherries + max(dp[row-1][prev_col1][prev_col2])
+    #       Remember: current_cherries = grid[row][col1] + grid[row][col2] if col1 != col2
+    #                                 = grid[row][col1] if col1 == col2 (avoid double counting)
+
+    directions = [-1, 0, 1]
+    for row in range(1, rows, 1):  # because the starting position is fixed
+        for col1 in range(cols):
+            for col2 in range(cols):
+                maxi = float("-inf")
+                for delta1 in directions:
+                    for delta2 in directions:
+                        prev_col1 = col1 + delta1
+                        prev_col2 = col2 + delta2
+                        if (0 <= prev_col1 < cols) and (0 <= prev_col2 < cols):
+                            maxi = max(maxi, dp[row - 1][prev_col1][prev_col2])
+                if col1 == col2:
+                    dp[row][col1][col2] = grid[row][col1] + maxi
+                else:
+                    dp[row][col1][col2] = grid[row][col1] + grid[row][col2] + maxi
+
+    # TODO: Find the answer
+    # Answer = max value among all dp[rows-1][col1][col2] for all valid col1, col2
+    # This represents the maximum cherries for any ending position in the last row
+
+    return max(dp[rows - 1][c1][c2] for c1 in range(cols) for c2 in range(cols))  # Replace with your implementation
 
 
 if __name__ == "__main__":
@@ -477,18 +537,26 @@ if __name__ == "__main__":
     print(f"Unique paths in a {m}x{n} grid: {count_unique_paths_memo(m, n)}")
     print(f"Unique paths in a {m}x{n} grid: {count_unique_paths_tabl(m, n)}")
     print(f"Unique paths in a {m}x{n} grid: {count_unique_paths_tabl_with_so(m, n)}")
-    print(f"Unique paths in a {m}x{n} grid: {count_paths_with_obstacles([[1,1,1],[1,-1,1],[1,1,1]])}")
+    print(
+        f"Unique paths in a {m}x{n} grid: {count_paths_with_obstacles([[1,1,1],[1,-1,1],[1,1,1]])}"
+    )
 
     min_path_grid = [[1, 3, 1], [1, 5, 1], [4, 2, 1]]
     print(f"Min path sum in grid: {min_path_sum(min_path_grid)}")
     print(f"Max path sum in grid: {max_path_sum(min_path_grid)}")
     triangle_grid = [[2], [3, 4], [6, 5, 7], [4, 1, 8, 3]]
-    print(f"Min path sum for Triangle grid: {min_path_sum_in_triangle_grid(triangle_grid)}")
+    print(
+        f"Min path sum for Triangle grid: {min_path_sum_in_triangle_grid(triangle_grid)}"
+    )
 
     # Cherry pickup example
     cherry_grid = [[3, 1, 1], [2, 5, 1], [1, 5, 5], [2, 1, 1]]
-    print(f"Cherry pickup (Ninja and Friends) memoization: {cherry_pickup_ninja_friends(cherry_grid)}")
-    # print(f"Cherry pickup (Ninja and Friends) tabulation: {cherry_pickup_ninja_friends_tab(cherry_grid)}")
+    print(
+        f"Cherry pickup (Ninja and Friends) memoization: {cherry_pickup_ninja_friends(cherry_grid)}"
+    )
+    print(
+        f"Cherry pickup (Ninja and Friends) tabulation: {cherry_pickup_ninja_friends_tab(cherry_grid)}"
+    )
 
     # Another example with more cherries
     cherry_grid2 = [
