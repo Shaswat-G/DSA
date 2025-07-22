@@ -3,28 +3,34 @@ from typing import List, Dict
 
 # Problem 1: Count All Unique Paths in a Grid
 # Given an m x n grid, count the number of unique ways to reach the bottom-right cell from the top-left cell.
-# You can only move either right or down at any point in time.
+# Movement is restricted to only right or down at each step.
+# This is a classic combinatorial DP problem, foundational for understanding grid-based dynamic programming.
 
 
 def count_unique_paths_memo(m: int, n: int) -> int:
     """
     Returns the number of unique paths from (0,0) to (m-1,n-1) in an m x n grid,
     moving only right or down.
+    Uses recursion with memoization (top-down DP) to avoid redundant subproblem computation.
+    Each cell (row, col) stores the number of unique ways to reach it from the origin.
     """
 
     def uniq_pths_from_origin(row, col, path_grid):
-        # Base Case:
+        # Base Case: If at the starting cell, there is exactly one way (do nothing).
         if row == 0 and col == 0:
             return 1
 
+        # Out of bounds: No way to reach from outside the grid.
         if row < 0 or col < 0:
             return 0
 
+        # If already computed, return cached value (memoization).
         if path_grid[row][col]:
             return path_grid[row][col]
 
-        # Rec Case:
-        # Uniq paths to row, col = 1* uniq paths to row-1, col + 1* uniq paths from to row, col -1
+        # Recursive Case:
+        # The number of unique paths to (row, col) is the sum of unique paths
+        # to the cell directly above (row-1, col) and the cell to the left (row, col-1).
         above_paths = uniq_pths_from_origin(row - 1, col, path_grid)
         left_paths = uniq_pths_from_origin(row, col - 1, path_grid)
         path_grid[row][col] = above_paths + left_paths
@@ -38,8 +44,9 @@ def count_unique_paths_memo(m: int, n: int) -> int:
 # More efficient: Space-optimized Tabulation for Unique Paths
 def count_unique_paths_tab_so(m: int, n: int) -> int:
     """
-    Space-optimized tabulation (bottom-up DP) for unique paths in m x n grid.
-    Uses only O(n) space by keeping just the previous row.
+    Space-optimized tabulation (bottom-up DP) for unique paths in an m x n grid.
+    Instead of a full 2D DP table, uses only O(n) space by keeping just the previous row.
+    At each step, the number of ways to reach a cell depends only on the left and above cells.
     """
     prev = [1] * n
     for row in range(1, m):
@@ -51,21 +58,17 @@ def count_unique_paths_tab_so(m: int, n: int) -> int:
     return prev[-1]
 
 
-# Initial TC was 2^(m*n) -> exponential
-# New TC = O(n*M) for dp grid + O(m+n) for path length.
-# Clearly recursion as well as space-optimized recursion (memoization) is top-down.
-# But, can we do tabulation (bottom up?) we can start from 0,0 and go upwards?
-# How to Convert Memoization to Tabulation? 1. Declare Base Case, 2. Express all states in iteration, 3. Perform recurrence.
-# Now TC is O(N*M) since nested for loop and SC (N*M) for path grid. Can we space optimize?
-# Notice that the for loop runs from left to right for each row from top to bottom. (book reading style).
-# Notice that for every cell, we just need a value from its upward cell and leftward cell!
-# we can store the previous row and the current row and replace them. TC: O(m*n) and TC O(n)
+# Time Complexity (TC) for recursion is exponential: O(2^(m*n)).
+# Memoization reduces TC to O(m*n) and space to O(m*n) for the DP grid, plus O(m+n) for the call stack.
+# Tabulation (bottom-up) starts from (0,0) and fills the DP table iteratively.
+# To convert memoization to tabulation: 1) Set base case, 2) Iterate over all states, 3) Apply recurrence relation.
+# Space optimization: For each cell, only the previous row and current row are needed, so we can use two arrays (or one, with careful updates) for O(n) space.
 
 
 def count_unique_paths_tabl(m: int, n: int) -> int:
     """
-    Returns the number of unique paths from (0,0) to (m-1,n-1) in an m x n grid,
-    moving only right or down.
+    Tabulation (bottom-up DP) for unique paths in an m x n grid.
+    Fills a 2D DP table where each cell contains the number of unique ways to reach it from the origin.
     """
     path_grid = [[0 for _ in range(n)] for _ in range(m)]
 
@@ -81,8 +84,8 @@ def count_unique_paths_tabl(m: int, n: int) -> int:
 
 def count_unique_paths_tabl_with_so(m: int, n: int) -> int:
     """
-    Returns the number of unique paths from (0,0) to (m-1,n-1) in an m x n grid,
-    moving only right or down.
+    Space-optimized tabulation for unique paths in an m x n grid.
+    Uses only two 1D arrays to keep track of the current and previous row, reducing space to O(n).
     """
     prev_row = [0 for _ in range(n)]
 
@@ -104,34 +107,38 @@ def count_unique_paths_tabl_with_so(m: int, n: int) -> int:
 
 def count_paths_with_obstacles(grid: List[List[int]]) -> int:
 
-    # Edge Cases:
+    # Edge Case: Empty grid or no columns means no paths.
     if not grid or not grid[0]:
         return 0
 
-    # House-keeping:
+    # Housekeeping: Get grid dimensions.
     rows = len(grid)
     cols = len(grid[0])
 
-    # Recursive Solution with memoization to avoid redundant recomputations.
-    # Approach : Uniq paths to x,y = 1*uniq paths to x-1, y + 1* uniq_paths to x, y-1, except when the sources are obstacles.
+    # Recursive solution with memoization to avoid redundant recomputation.
+    # For each cell (x, y), the number of unique paths is the sum of paths from above and left,
+    # unless the cell is an obstacle (-1), in which case there are 0 paths.
 
     def rec_paths_from_origin_to(
         row: int, col: int, grid: List[List[int]], path_grid: List[List[int]]
     ) -> int:
-        # Base Case:
+        # Base Case: Start cell (0,0) has one way to reach it.
         if row == 0 and col == 0:
             return 1
 
+        # Out of bounds: No way to reach from outside the grid.
         if row < 0 or col < 0:
             return 0
 
+        # Obstacle cell: No way to pass through.
         if grid[row][col] == -1:
             return 0
 
+        # Return cached value if already computed.
         if path_grid[row][col] != -1:
             return path_grid[row][col]
 
-        # Recursive Case:
+        # Recursive Case: Sum of paths from above and left, if not obstacles.
         above_paths = (
             rec_paths_from_origin_to(row - 1, col, grid, path_grid) if (row > 0) else 0
         )
@@ -148,27 +155,29 @@ def count_paths_with_obstacles(grid: List[List[int]]) -> int:
 # 3. Min Path Sum
 def min_path_sum(grid: List[List[int]]) -> int:
 
-    # Edge Case:
+    # Edge Case: Empty grid or no columns means no path exists.
     if not grid or not grid[0]:
         return 0
 
-    # House Keeeping:
+    # Housekeeping: Get grid dimensions.
     rows, cols = len(grid), len(grid[0])
 
-    # Approach : Recursively try all possible paths and keep track of the minimum.
-    # Optimize for time by using memoization (avoiding recomputes)
+    # Approach: Recursively try all possible paths from (0,0) to (rows-1, cols-1),
+    # keeping track of the minimum sum. Memoization avoids recomputation of subproblems.
 
     def rec_path_sum_from_origin_to(
         row: int, col: int, grid: List[List[int]], min_cost_grid: List[List[int]]
     ) -> int:
-        # Base Case:
+        # Base Case: Out of bounds means an invalid path (infinite cost).
         if row < 0 or col < 0:
             return float("inf")
 
+        # Return cached value if already computed.
         if min_cost_grid[row][col] != -1:
             return min_cost_grid[row][col]
 
-        # Recursive Case:
+        # Recursive Case: Minimum path sum to (row, col) is its value plus
+        # the minimum of the path sums from above and from the left.
         above_path = (
             rec_path_sum_from_origin_to(row - 1, col, grid, min_cost_grid)
             if (row > 0)
@@ -191,6 +200,7 @@ def min_path_sum(grid: List[List[int]]) -> int:
 def min_path_sum_tab(grid: List[List[int]]) -> int:
     """
     Tabulation (bottom-up DP) for minimum path sum in a grid.
+    Fills a 2D DP table where each cell contains the minimum sum to reach that cell from the origin.
     """
     if not grid or not grid[0]:
         return 0
@@ -201,29 +211,29 @@ def min_path_sum_tab(grid: List[List[int]]) -> int:
             if row == 0 and col == 0:
                 dp[row][col] = grid[row][col]
             else:
-                up = dp[row - 1][col] if row > 0 else float("inf")
-                left = dp[row][col - 1] if col > 0 else float("inf")
+                up = dp[row - 1][col] if row > 0 else float('inf')
+                left = dp[row][col - 1] if col > 0 else float('inf')
                 dp[row][col] = grid[row][col] + min(up, left)
     return dp[-1][-1]
-
 
 # Space-optimized version for Min Path Sum
 def min_path_sum_tab_so(grid: List[List[int]]) -> int:
     """
     Space-optimized tabulation for minimum path sum in a grid (O(n) space).
+    Uses only two 1D arrays to keep track of the current and previous row, reducing space usage.
     """
     if not grid or not grid[0]:
         return 0
     rows, cols = len(grid), len(grid[0])
-    prev = [float("inf")] * cols
+    prev = [float('inf')] * cols
     for row in range(rows):
-        curr = [float("inf")] * cols
+        curr = [float('inf')] * cols
         for col in range(cols):
             if row == 0 and col == 0:
                 curr[col] = grid[row][col]
             else:
-                up = prev[col] if row > 0 else float("inf")
-                left = curr[col - 1] if col > 0 else float("inf")
+                up = prev[col] if row > 0 else float('inf')
+                left = curr[col - 1] if col > 0 else float('inf')
                 curr[col] = grid[row][col] + min(up, left)
         prev = curr
     return prev[-1]
@@ -236,28 +246,30 @@ def min_path_sum_tab_so(grid: List[List[int]]) -> int:
 
 def min_path_sum_in_triangle_grid(grid: List[List[int]]) -> int:
 
-    # Edge Case:
+    # Edge Case: Empty triangle or no rows means no path exists.
     if not grid or not grid[0]:
         return -1
 
-    # House Keeping
+    # Housekeeping: Number of rows in the triangle.
     rows = len(grid)
-    # cols in the ith row (0-indexing) = i+1
+    # Each row i has i+1 columns (triangle structure).
 
-    # Approach: Recursion to try out all possible paths and track minimum sum to bottom.
-    # Memoization for optimizing time complexity from exponential to linear by avoiding recomputations.
+    # Approach: Recursively try all possible paths from the top to the bottom row,
+    # keeping track of the minimum sum. Memoization avoids recomputation of subproblems.
 
     def rec_path_sum_from_vertex_to(
         row: int, col: int, grid: List[List[int]], path_grid: List[List[int]]
     ) -> int:
-        # Base Case
+        # Base Case: Out of bounds means an invalid path (infinite cost).
         if row < 0 or col < 0:
             return float("inf")
 
+        # Return cached value if already computed.
         if path_grid[row][col] != -1:
             return path_grid[row][col]
 
-        # Recursive Case
+        # Recursive Case: Minimum path sum to (row, col) is its value plus
+        # the minimum of the path sums from above (same col) and above-left (col-1).
         above_path_cost = (
             rec_path_sum_from_vertex_to(row - 1, col, grid, path_grid)
             if (row > 0 and col < row)
@@ -285,7 +297,8 @@ def min_path_sum_in_triangle_grid(grid: List[List[int]]) -> int:
 def min_path_sum_in_triangle_grid_tab(grid: List[List[int]]) -> int:
     """
     Bottom-up tabulation for minimum path sum in a triangle grid.
-    Modifies a 1D array in place for O(n) space.
+    Uses a single 1D array (O(n) space) to iteratively compute the minimum path sum from bottom to top.
+    At each step, dp[col] holds the minimum path sum to reach the bottom from (row, col).
     """
     if not grid or not grid[0]:
         return -1
@@ -297,6 +310,7 @@ def min_path_sum_in_triangle_grid_tab(grid: List[List[int]]) -> int:
     return dp[0]
 
 
+
 # 6. Maximum path sum from first row to last row (Recursive + Memoization)
 def max_path_sum(grid: List[List[int]]) -> int:
     """
@@ -306,14 +320,7 @@ def max_path_sum(grid: List[List[int]]) -> int:
     if not grid or not grid[0]:
         return 0
     rows, cols = len(grid), len(grid[0])
-
-    def rec_max_path_sum_from_to(
-        origin_col: int,
-        row: int,
-        col: int,
-        grid: List[List[int]],
-        max_dict: Dict[int, List[List[int]]],
-    ) -> int:
+    def rec_max_path_sum_from_to(origin_col: int, row: int, col: int, grid: List[List[int]], max_dict: Dict[int, List[List[int]]]) -> int:
         # Base Case: reached the origin cell in the first row
         if row == 0 and col == origin_col:
             return max_dict[origin_col][row][col]
@@ -322,26 +329,11 @@ def max_path_sum(grid: List[List[int]]) -> int:
         if max_dict[origin_col][row][col] != -1:
             return max_dict[origin_col][row][col]
         # Recursive Case: try all three possible moves from above
-        above_path = (
-            rec_max_path_sum_from_to(origin_col, row - 1, col, grid, max_dict)
-            if row > 0
-            else 0
-        )
-        left_diag_path = (
-            rec_max_path_sum_from_to(origin_col, row - 1, col + 1, grid, max_dict)
-            if (row > 0 and col < cols - 1)
-            else 0
-        )
-        right_diag_path = (
-            rec_max_path_sum_from_to(origin_col, row - 1, col - 1, grid, max_dict)
-            if (row > 0 and col > 0)
-            else 0
-        )
-        max_dict[origin_col][row][col] = grid[row][col] + max(
-            above_path, left_diag_path, right_diag_path
-        )
+        above_path = rec_max_path_sum_from_to(origin_col, row - 1, col, grid, max_dict) if row > 0 else 0
+        left_diag_path = rec_max_path_sum_from_to(origin_col, row - 1, col + 1, grid, max_dict) if (row > 0 and col < cols - 1) else 0
+        right_diag_path = rec_max_path_sum_from_to(origin_col, row - 1, col - 1, grid, max_dict) if (row > 0 and col > 0) else 0
+        max_dict[origin_col][row][col] = grid[row][col] + max(above_path, left_diag_path, right_diag_path)
         return max_dict[origin_col][row][col]
-
     max_sum = 0
     max_dict = {}
     for origin_col in range(cols):
@@ -352,7 +344,6 @@ def max_path_sum(grid: List[List[int]]) -> int:
         max_sum = max(max_sum, max(max_dict[origin_col][rows - 1]))
         del max_dict[origin_col]
     return max_sum
-
 
 # 6b. Maximum path sum from first row to last row (Tabulation, Bottom-Up)
 def max_path_sum_tab(grid: List[List[int]]) -> int:
@@ -369,12 +360,11 @@ def max_path_sum_tab(grid: List[List[int]]) -> int:
     for row in range(1, rows):
         for col in range(cols):
             up = dp[row - 1][col]
-            left_diag = dp[row - 1][col - 1] if col > 0 else float("-inf")
-            right_diag = dp[row - 1][col + 1] if col < cols - 1 else float("-inf")
+            left_diag = dp[row - 1][col - 1] if col > 0 else float('-inf')
+            right_diag = dp[row - 1][col + 1] if col < cols - 1 else float('-inf')
             dp[row][col] += max(up, left_diag, right_diag)
     # The answer is the max value in the last row
     return max(dp[-1])
-
 
 if __name__ == "__main__":
     # Example: 3x3 grid
@@ -382,14 +372,10 @@ if __name__ == "__main__":
     print(f"Unique paths in a {m}x{n} grid: {count_unique_paths_memo(m, n)}")
     print(f"Unique paths in a {m}x{n} grid: {count_unique_paths_tabl(m, n)}")
     print(f"Unique paths in a {m}x{n} grid: {count_unique_paths_tabl_with_so(m, n)}")
-    print(
-        f"Unique paths in a {m}x{n} grid: {count_paths_with_obstacles([[1,1,1],[1,-1,1],[1,1,1]])}"
-    )
+    print(f"Unique paths in a {m}x{n} grid: {count_paths_with_obstacles([[1,1,1],[1,-1,1],[1,1,1]])}")
 
     min_path_grid = [[1, 3, 1], [1, 5, 1], [4, 2, 1]]
     print(f"Min path sum in grid: {min_path_sum(min_path_grid)}")
     print(f"Max path sum in grid: {max_path_sum(min_path_grid)}")
     triangle_grid = [[2], [3, 4], [6, 5, 7], [4, 1, 8, 3]]
-    print(
-        f"Min path sum for Triangle grid: {min_path_sum_in_triangle_grid(triangle_grid)}"
-    )
+    print(f"Min path sum for Triangle grid: {min_path_sum_in_triangle_grid(triangle_grid)}")
