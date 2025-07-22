@@ -211,10 +211,11 @@ def min_path_sum_tab(grid: List[List[int]]) -> int:
             if row == 0 and col == 0:
                 dp[row][col] = grid[row][col]
             else:
-                up = dp[row - 1][col] if row > 0 else float('inf')
-                left = dp[row][col - 1] if col > 0 else float('inf')
+                up = dp[row - 1][col] if row > 0 else float("inf")
+                left = dp[row][col - 1] if col > 0 else float("inf")
                 dp[row][col] = grid[row][col] + min(up, left)
     return dp[-1][-1]
+
 
 # Space-optimized version for Min Path Sum
 def min_path_sum_tab_so(grid: List[List[int]]) -> int:
@@ -225,15 +226,15 @@ def min_path_sum_tab_so(grid: List[List[int]]) -> int:
     if not grid or not grid[0]:
         return 0
     rows, cols = len(grid), len(grid[0])
-    prev = [float('inf')] * cols
+    prev = [float("inf")] * cols
     for row in range(rows):
-        curr = [float('inf')] * cols
+        curr = [float("inf")] * cols
         for col in range(cols):
             if row == 0 and col == 0:
                 curr[col] = grid[row][col]
             else:
-                up = prev[col] if row > 0 else float('inf')
-                left = curr[col - 1] if col > 0 else float('inf')
+                up = prev[col] if row > 0 else float("inf")
+                left = curr[col - 1] if col > 0 else float("inf")
                 curr[col] = grid[row][col] + min(up, left)
         prev = curr
     return prev[-1]
@@ -310,7 +311,6 @@ def min_path_sum_in_triangle_grid_tab(grid: List[List[int]]) -> int:
     return dp[0]
 
 
-
 # 6. Maximum path sum from first row to last row (Recursive + Memoization)
 def max_path_sum(grid: List[List[int]]) -> int:
     """
@@ -320,7 +320,14 @@ def max_path_sum(grid: List[List[int]]) -> int:
     if not grid or not grid[0]:
         return 0
     rows, cols = len(grid), len(grid[0])
-    def rec_max_path_sum_from_to(origin_col: int, row: int, col: int, grid: List[List[int]], max_dict: Dict[int, List[List[int]]]) -> int:
+
+    def rec_max_path_sum_from_to(
+        origin_col: int,
+        row: int,
+        col: int,
+        grid: List[List[int]],
+        max_dict: Dict[int, List[List[int]]],
+    ) -> int:
         # Base Case: reached the origin cell in the first row
         if row == 0 and col == origin_col:
             return max_dict[origin_col][row][col]
@@ -329,11 +336,26 @@ def max_path_sum(grid: List[List[int]]) -> int:
         if max_dict[origin_col][row][col] != -1:
             return max_dict[origin_col][row][col]
         # Recursive Case: try all three possible moves from above
-        above_path = rec_max_path_sum_from_to(origin_col, row - 1, col, grid, max_dict) if row > 0 else 0
-        left_diag_path = rec_max_path_sum_from_to(origin_col, row - 1, col + 1, grid, max_dict) if (row > 0 and col < cols - 1) else 0
-        right_diag_path = rec_max_path_sum_from_to(origin_col, row - 1, col - 1, grid, max_dict) if (row > 0 and col > 0) else 0
-        max_dict[origin_col][row][col] = grid[row][col] + max(above_path, left_diag_path, right_diag_path)
+        above_path = (
+            rec_max_path_sum_from_to(origin_col, row - 1, col, grid, max_dict)
+            if row > 0
+            else 0
+        )
+        left_diag_path = (
+            rec_max_path_sum_from_to(origin_col, row - 1, col + 1, grid, max_dict)
+            if (row > 0 and col < cols - 1)
+            else 0
+        )
+        right_diag_path = (
+            rec_max_path_sum_from_to(origin_col, row - 1, col - 1, grid, max_dict)
+            if (row > 0 and col > 0)
+            else 0
+        )
+        max_dict[origin_col][row][col] = grid[row][col] + max(
+            above_path, left_diag_path, right_diag_path
+        )
         return max_dict[origin_col][row][col]
+
     max_sum = 0
     max_dict = {}
     for origin_col in range(cols):
@@ -344,6 +366,7 @@ def max_path_sum(grid: List[List[int]]) -> int:
         max_sum = max(max_sum, max(max_dict[origin_col][rows - 1]))
         del max_dict[origin_col]
     return max_sum
+
 
 # 6b. Maximum path sum from first row to last row (Tabulation, Bottom-Up)
 def max_path_sum_tab(grid: List[List[int]]) -> int:
@@ -360,11 +383,93 @@ def max_path_sum_tab(grid: List[List[int]]) -> int:
     for row in range(1, rows):
         for col in range(cols):
             up = dp[row - 1][col]
-            left_diag = dp[row - 1][col - 1] if col > 0 else float('-inf')
-            right_diag = dp[row - 1][col + 1] if col < cols - 1 else float('-inf')
+            left_diag = dp[row - 1][col - 1] if col > 0 else float("-inf")
+            right_diag = dp[row - 1][col + 1] if col < cols - 1 else float("-inf")
             dp[row][col] += max(up, left_diag, right_diag)
     # The answer is the max value in the last row
     return max(dp[-1])
+
+
+# 7. 3D state space DP with simultaneous agent tracking:
+
+
+def cherry_pickup_ninja_friends(grid: List[List[int]]) -> int:
+    # Edge Case:
+    if not grid or not grid[0]:
+        return 0
+
+    # House Keeping:
+    rows, cols = len(grid), len(grid[0])
+
+    # Approach: If it were a simpler problem -> 1 agent, fixed origin, fixed destination -> recursive solution with overlapping subproblems -> optimized by memoization -> tabulation.
+    # Add complexity: Multiple desitnations -> maximize across last row cells -> Find the max sum across maximum path sums of last row cells as destinations, fill dp grid only once.
+    # Add complexity: 2 agents -> move simultaneously -> track both agents -> row will be the same, col can be different -> 3 parameter state representation -> (row, col1, col2)
+
+    def rec_max_path_sum(
+        row: int,
+        col1: int,
+        col2: int,
+        directions: List[int],
+        grid: List[List[int]],
+        max_grid: Dict[int, List[List[int]]],
+    ) -> int:
+        # Base Case:
+        # 1) Out of bounds
+        if row < 0 or col1 < 0 or col1 >= cols or col2 < 0 or col2 >= cols:
+            return float("-inf")
+
+        # 2) If at the starting row (row 0), return the initial values
+        if row == 0:
+            if col1 == 0 and col2 == cols - 1:
+                return grid[0][0] + grid[0][cols - 1]
+            else:
+                return float("-inf")  # Invalid starting position
+
+        # 3) Check memoization
+        if max_grid[row][col1][col2] != -1:
+            return max_grid[row][col1][col2]
+
+        # Recursive Case:
+        max_from_above = float("-inf")
+        for delta1 in directions:
+            for delta2 in directions:
+                max_from_above = max(
+                    max_from_above,
+                    rec_max_path_sum(
+                        row - 1,
+                        col1 + delta1,
+                        col2 + delta2,
+                        directions,
+                        grid,
+                        max_grid,
+                    ),
+                )
+
+        # Add current cell values (avoid double counting if same position)
+        if col1 == col2:
+            max_grid[row][col1][col2] = grid[row][col1] + max_from_above
+        else:
+            max_grid[row][col1][col2] = grid[row][col1] + grid[row][col2] + max_from_above
+
+        return max_grid[row][col1][col2]
+
+    # Init max_sum DP grid -> 3D states: max_grid[row][col1][col2]
+    directions = [-1, 0, 1]
+
+    max_grid = {}
+    for row in range(rows):
+        max_grid[row] = [[-1 for _ in range(cols)] for _ in range(cols)]
+
+    # We need to try ALL possible ending positions in the last row
+    # and find the maximum among them
+    max_cherries = 0
+    for end_col1 in range(cols):
+        for end_col2 in range(cols):
+            cherries = rec_max_path_sum(rows - 1, end_col1, end_col2, directions, grid, max_grid)
+            max_cherries = max(max_cherries, cherries)
+
+    return max_cherries
+
 
 if __name__ == "__main__":
     # Example: 3x3 grid
@@ -379,3 +484,18 @@ if __name__ == "__main__":
     print(f"Max path sum in grid: {max_path_sum(min_path_grid)}")
     triangle_grid = [[2], [3, 4], [6, 5, 7], [4, 1, 8, 3]]
     print(f"Min path sum for Triangle grid: {min_path_sum_in_triangle_grid(triangle_grid)}")
+
+    # Cherry pickup example
+    cherry_grid = [[3, 1, 1], [2, 5, 1], [1, 5, 5], [2, 1, 1]]
+    print(f"Cherry pickup (Ninja and Friends) memoization: {cherry_pickup_ninja_friends(cherry_grid)}")
+    # print(f"Cherry pickup (Ninja and Friends) tabulation: {cherry_pickup_ninja_friends_tab(cherry_grid)}")
+
+    # Another example with more cherries
+    cherry_grid2 = [
+        [1, 0, 0, 0, 0, 0, 1],
+        [2, 0, 0, 0, 0, 3, 0],
+        [2, 0, 9, 0, 0, 0, 0],
+        [0, 3, 0, 5, 4, 0, 0],
+        [1, 0, 2, 3, 0, 0, 6],
+    ]
+    print(f"Cherry pickup large grid: {cherry_pickup_ninja_friends(cherry_grid2)}")
