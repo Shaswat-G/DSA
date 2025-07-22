@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 
 # Problem 1: Count All Unique Paths in a Grid
@@ -225,8 +225,47 @@ def min_path_sum_in_triangle_grid(grid: List[List[int]]) -> int:
 
 # 6. Maximum path sum from first row to last row
 def max_path_sum(grid : List[List[int]]) -> int:
-    pass
 
+    # Edge Case:
+    if not grid or not grid[0]:
+        return 0
+
+    # House Keeping:
+    rows, cols = len(grid), len(grid[0])
+
+    # Approach : We know how to generate all possible paths from a fixed origin to a fixed end point using recursion with memoization.
+    # We can fill a different dp_grid for each point in the zeroth row and then take maximums of all the points in the last row.
+
+    def rec_max_path_sum_from_to(origin_col : int, row : int, col : int, grid : List[List[int]], max_dict : Dict[int, List[List[int]]]) -> int:
+        # Base Case:
+        if row ==0 and col == origin_col:
+            return max_dict[origin_col][row][col]
+
+        if row < 0 or col < 0 or col > cols-1:
+            return 0
+
+        if max_dict[origin_col][row][col] != -1:
+            return max_dict[origin_col][row][col]
+
+        # Recursive Case:
+        above_path = rec_max_path_sum_from_to(origin_col, row-1, col, grid, max_dict) if row>0 else 0
+        left_diag_path = rec_max_path_sum_from_to(origin_col, row-1, col+1, grid, max_dict) if (row>0 and col<cols-1) else 0
+        right_diag_path = rec_max_path_sum_from_to(origin_col, row-1, col-1, grid, max_dict) if (row>0 and col>0) else 0
+        max_dict[origin_col][row][col] = grid[row][col] + max(above_path, left_diag_path, right_diag_path)
+        return max_dict[origin_col][row][col]
+
+    # Init DP Data Structure (HashMap of 2D grids, one for each origin)
+    max_sum = 0
+    max_dict = {}
+    for origin_col in range(cols):
+        max_dict[origin_col] = [[-1 for _ in range(cols)] for _ in range(rows)]
+        max_dict[origin_col][0][origin_col] = grid[0][origin_col]
+        for dest_col in range(cols):
+            rec_max_path_sum_from_to(origin_col, rows-1, dest_col, grid, max_dict)
+        max_sum = max(max_sum, max(max_dict[origin_col][rows-1]))
+        del max_dict[origin_col]
+
+    return max_sum
 
 if __name__ == "__main__":
     # Example: 3x3 grid
