@@ -121,6 +121,26 @@ def count_subset_sums_tabulation(array: List[int], target: int) -> int:
 
     return dp[len(array)][target]
 
+def count_subset_sums_so(array: List[int], target: int) -> int:
+
+    rows = len(array) + 1
+    cols = sum(array) + 1
+
+    prev_row = [0 for _ in range(cols)]
+    prev_row[0] = 1
+
+    for row in range(1, rows):
+        current_row = [0 for _ in range(cols)]
+        current_row[0] = 1
+        for col in range(1, cols):
+            current_row[col] += prev_row[col]
+            if col >=   array[row - 1]:
+                current_row[col] += prev_row[col - array[row - 1]]
+
+        prev_row = current_row
+
+    return current_row[target]
+
 
 if __name__ == "__main__":
     # Test array for counting subset sums (larger example)
@@ -130,9 +150,11 @@ if __name__ == "__main__":
     # Function calls for counting subset sums (implementations to be written by you)
     result_count_memo = count_subset_sums_memo(test_array, target_sum)
     result_count_tab = count_subset_sums_tabulation(test_array, target_sum)
+    result_count_so = count_subset_sums_so(test_array, target_sum)
 
     print(f"Number of subsets with sum {target_sum} (memo): {result_count_memo}")
     print(f"Number of subsets with sum {target_sum} (tabulation): {result_count_tab}")
+    print(f"Number of subsets with sum {target_sum} (so): {result_count_so}")
 
 
 # One great realization is that filling the dp table uptill target will give you the possibilities for
