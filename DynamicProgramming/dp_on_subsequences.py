@@ -116,7 +116,7 @@ def count_subset_sums_tabulation(array: List[int], target: int) -> int:
     for row in range(1, rows):
         for col in range(1, cols):
             dp[row][col] += dp[row - 1][col]
-            if col >=   array[row - 1]:
+            if col >= array[row - 1]:
                 dp[row][col] += dp[row - 1][col - array[row - 1]]
 
     return dp[len(array)][target]
@@ -160,3 +160,8 @@ if __name__ == "__main__":
 # One great realization is that filling the dp table uptill target will give you the possibilities for
 # all possible subset sums from 0 to k included. (0 is always true).
 # So if you run dp for target = sum(array) then you know all possible subset sums.
+# The state is characterised by (index, current_sum) where index is the current element being considered -> first i elements (0 to i-1).
+# Therefore number of possible I's is 0 to len(array) => len(array) + 1
+# current sum will go from 0 to sum(array) => sum(array) + 1
+# This means we can use a 2D dp table of size (len(array) + 1) x (sum(array) + 1)
+# This is a great way to find all possible subset sums and their counts.
