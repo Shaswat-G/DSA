@@ -184,7 +184,7 @@ Problems like "Number of Islands" can be solved using BFS/DFS on a grid by treat
 ### A. Traversal & Search
 
 - **Connected Components**
-  - _Idea:_ Use BFS/DFS to mark all nodes in a component. Repeat for all unvisited nodes.
+  - _Idea:_ Each traversal visits all nodes in that connected components. Use BFS/DFS to mark all nodes in a component. Repeat for all unvisited nodes. The number of times you start a new traversal is the number of connected components.
   - _When to use:_ Find number of islands, clusters, or groups.
 - **Path Existence**
   - _Idea:_ Use BFS/DFS to check if a path exists between two nodes.
