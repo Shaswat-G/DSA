@@ -4,27 +4,27 @@ from collections import defaultdict
 
 # Understand that this is not count. In count we need to output 1 in the base case when index == len()
 # since that represents a vlid path and things are summed and aggregated in upwards prop.
-# However in summations, we are wondering whthter from this state is there any future value addition.
+# However in summations, we are wondering whether from this state is there any future value addition.
 def knapsack_01_memo(weights: List[int], values: List[int], capacity: int) -> int:
     if not weights or not values or capacity == 0:
         return 0
 
     dp = {}
 
-    def rec(index: int, weight: int) -> int:
+    def rec(index: int, current_weight: int) -> int:
         if index == len(weights):
             return 0  # No more items to add, return accumulated value
-        if weight > capacity:
+        if current_weight > capacity:
             return 0  # Exceeded capacity, invalid path
-        if (index, weight) in dp:
-            return dp[(index, weight)]
+        if (index, current_weight) in dp:
+            return dp[(index, current_weight)]
         # Include current item if it doesn't exceed capacity
         include = 0
-        if weight + weights[index] <= capacity:
-            include = values[index] + rec(index + 1, weight + weights[index])
-        exclude = rec(index + 1, weight)
-        dp[(index, weight)] = max(include, exclude)
-        return dp[(index, weight)]
+        if current_weight + weights[index] <= capacity:
+            include = values[index] + rec(index + 1, current_weight + weights[index])
+        exclude = rec(index + 1, current_weight)
+        dp[(index, current_weight)] = max(include, exclude)
+        return dp[(index, current_weight)]
 
     return rec(0, 0)
 
