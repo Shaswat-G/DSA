@@ -173,7 +173,7 @@ Problems like "Number of Islands" can be solved using BFS/DFS on a grid by treat
 - **Parallel edges:** Allowed in multigraphs, not in simple graphs.
 - **Acyclic:** No cycles.
 - **Tree:** Connected, acyclic, V-1 edges.
-- **Bipartite:** No odd cycles.
+- **Bipartite:** No odd cycles. The vertex set is partionable into two disjoint sets, where no two graph vertices within the same set are adjacent.
 - **DAG:** Topological sort possible.
 - **Articulation point/bridge:** Removal increases #components.
 - **Eulerian Path/Circuit:** All vertices even degree (circuit), exactly two odd (path).
@@ -184,7 +184,8 @@ Problems like "Number of Islands" can be solved using BFS/DFS on a grid by treat
 ### A. Traversal & Search
 
 - **Connected Components**
-  - _Idea:_ Each traversal visits all nodes in that connected components. Use BFS/DFS to mark all nodes in a component. Repeat for all unvisited nodes. The number of times you start a new traversal is the number of connected components.
+  - _Idea:_ Each traversal visits all nodes in that connected components. Use BFS/DFS to mark all nodes in a component. Repeat for all unvisited nodes. The number of times you start a new traversal is the number of connected components. To count distinct islands keep track of the BFS sequence in a set
+  - and compare a new BFS sequence with the set to check if it's a new island or not.
   - _When to use:_ Find number of islands, clusters, or groups.
 - **Path Existence**
   - _Idea:_ Use BFS/DFS to check if a path exists between two nodes.
