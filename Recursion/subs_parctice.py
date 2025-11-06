@@ -1,206 +1,986 @@
 """
-Recursion Problems
+Complete Backtracking and Recursion Template for Arrays
+========================================================
+This module provides implementations for all variations of:
+- Subsets (Powerset)
+- Subsequences
+- Combinations
+- Permutations
 
-This file contains a collection of recursion problems with their problem statements, function templates, and test cases.
-
-Problem 1: Print Name N Times
-Print a given name N times using recursion.
-
-Problem 2: Sum of First N Numbers
-Calculate the sum of the first N natural numbers using recursion.
-
-Problem 3: Factorial of a Number
-Calculate the factorial of a given number using recursion.
-
-Problem 4: Reverse an Array
-Reverse a given array using recursion.
-
-Problem 5: Check Palindrome
-Check if a given string is a palindrome using recursion.
-
-Problem 6: Fibonacci Number
-Calculate the Nth Fibonacci number using recursion.
-
-Problem 7: Print All Subsequences
-Print all subsequences of a given array using recursion.
-
-Problem 8: Subsequence with Sum K
-Find all subsequences of a given array whose sum is K using recursion.
-
-Problem 9: Count Subsequences with Sum K
-Count the number of subsequences of a given array whose sum is K using recursion.
-
-Problem 10: Combination Sum
-Find all unique combinations in an array where the numbers sum to a target.
-
-Problem 11: All Permutations
-Generate all permutations of a given array using recursion.
-
+Each function includes duplicates/no-duplicates variants and reuse/no-reuse options.
 """
 
-from typing import List
+# ==============================================================================
+# PART 1: FUNDAMENTAL BUILDING BLOCKS
+# ==============================================================================
 
 
-def print_name_n_times(n: int, name: str) -> None:
+def generate_binary_strings(n):
     """
-    Print a given name N times using recursion.
+    Generate all binary strings of length n.
+    This is the simplest form of the include/exclude pattern.
 
-    :param n: int - The number of times to print the name.
-    :param name: str - The name to print.
+    Args:
+        n: Length of binary strings
+
+    Returns:
+        List of all binary strings of length n
+
+    Example:
+        generate_binary_strings(2) -> ['00', '01', '10', '11']
+        generate_binary_strings(3) -> ['000', '001', '010', '011', '100', '101', '110', '111']
+
+    Time: O(2^n * n) - 2^n strings, each takes O(n) to build
+    Space: O(2^n * n) for storing results
     """
-    # TODO: Implement the function
-    pass
+    result = []
+
+    def backtrack(path=[]):
+        if len(path) == n:
+            result.append("".join(path))
+            return
+
+        # Choice 1: Add '0'
+        path.append("0")
+        backtrack(path)
+        path.pop()
+
+        # Choice 2: Add '1'
+        path.append("1")
+        backtrack(path)
+        path.pop()
+
+    backtrack()
+    return result
 
 
-def sum_of_first_n(n: int) -> int:
+def count_paths_in_grid(m, n):
     """
-    Calculate the sum of the first N natural numbers using recursion.
+    Count paths from top-left to bottom-right in m×n grid (can only move right or down).
+    Demonstrates how counting problems relate to combinations: C(m+n-2, m-1).
 
-    :param n: int - The number up to which the sum is calculated.
-    :return: int - The sum of the first N natural numbers.
+    Args:
+        m: Number of rows
+        n: Number of columns
+
+    Returns:
+        Number of unique paths
+
+    Example:
+        count_paths_in_grid(2, 2) -> 2 (RD, DR)
+        count_paths_in_grid(3, 2) -> 3 (RDD, DRD, DDR)
+
+    Time: O(2^(m+n)) without memoization, O(m*n) with memoization
+    Space: O(m+n) for recursion stack
     """
-    # TODO: Implement the function
-    pass
+
+    def backtrack(row=0, col=0):
+        # Base case: reached bottom-right
+        if row == m - 1 and col == n - 1:
+            return 1
+
+        # Out of bounds
+        if row >= m or col >= n:
+            return 0
+
+        # Two choices: go down or go right
+        paths = 0
+        paths += backtrack(row + 1, col)  # Down
+        paths += backtrack(row, col + 1)  # Right
+
+        return paths
+
+    return backtrack()
 
 
-def factorial(n: int) -> int:
+# ==============================================================================
+# PART 2: SUBSETS (Order doesn't matter, any size)
+# ==============================================================================
+
+
+def subsets_no_duplicates_v1(nums):
     """
-    Calculate the factorial of a given number using recursion.
+    Generate all subsets of array without duplicates using include/exclude pattern.
+    Each element has two choices: include in subset or exclude from subset.
 
-    :param n: int - The number to calculate the factorial for.
-    :return: int - The factorial of the number.
+    Args:
+        nums: List of unique integers
+
+    Returns:
+        List of all possible subsets
+
+    Example:
+        subsets_no_duplicates_v1([1,2]) -> [[], [1], [2], [1,2]]
+        subsets_no_duplicates_v1([1,2,3]) -> [[], [1], [2], [1,2], [3], [1,3], [2,3], [1,2,3]]
+
+    Time: O(2^n * n) - 2^n subsets, each takes O(n) to copy
+    Space: O(2^n * n) for storing all subsets
     """
-    # TODO: Implement the function
-    pass
+    result = []
+
+    def backtrack(index=0, path=[]):
+        # Base case: processed all elements
+        if index == len(nums):
+            result.append(path[:])  # Important: copy the path
+            return
+
+        # Choice 1: Exclude current element
+        backtrack(index + 1, path)
+
+        # Choice 2: Include current element
+        path.append(nums[index])
+        backtrack(index + 1, path)
+        path.pop()  # Backtrack
+
+    backtrack()
+    return result
 
 
-def reverse_array(array: List[int]) -> List[int]:
+def subsets_no_duplicates_v2(nums):
     """
-    Reverse a given array using recursion.
+    Generate all subsets using the "choose from remaining" pattern.
+    This approach naturally avoids generating duplicates like [2,1] and [1,2].
 
-    :param array: List[int] - The array to reverse.
-    :return: List[int] - The reversed array.
+    Args:
+        nums: List of unique integers
+
+    Returns:
+        List of all possible subsets
+
+    Example:
+        subsets_no_duplicates_v2([1,2]) -> [[], [1], [1,2], [2]]
+        subsets_no_duplicates_v2([1,2,3]) -> [[], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]]
+
+    Time: O(2^n * n)
+    Space: O(2^n * n)
     """
-    # TODO: Implement the function
-    pass
+    result = []
+
+    def backtrack(start=0, path=[]):
+        # Add current subset (can be any size)
+        result.append(path[:])
+
+        # Try adding each remaining element
+        for i in range(start, len(nums)):
+            path.append(nums[i])
+            backtrack(i + 1, path)  # i+1 ensures we don't revisit elements
+            path.pop()
+
+    backtrack()
+    return result
 
 
-def is_palindrome(s: str) -> bool:
+def subsets_with_duplicates(nums):
     """
-    Check if a given string is a palindrome using recursion.
+    Generate all subsets when input array contains duplicates.
+    Key insight: Sort array and skip duplicate elements at the same recursion level.
 
-    :param s: str - The string to check.
-    :return: bool - True if the string is a palindrome, False otherwise.
+    Args:
+        nums: List of integers (may contain duplicates)
+
+    Returns:
+        List of all unique subsets
+
+    Example:
+        subsets_with_duplicates([1,2,2]) -> [[], [1], [1,2], [1,2,2], [2], [2,2]]
+        subsets_with_duplicates([4,4,4,1,4]) -> [[], [1], [1,4], [1,4,4], [1,4,4,4], [1,4,4,4,4], [4], [4,4], [4,4,4], [4,4,4,4]]
+
+    Time: O(2^n * n)
+    Space: O(2^n * n)
     """
-    # TODO: Implement the function
-    pass
+    nums.sort()  # Critical: sort to group duplicates together
+    result = []
+
+    def backtrack(start=0, path=[]):
+        result.append(path[:])
+
+        for i in range(start, len(nums)):
+            # Skip duplicates at the same recursion level
+            # This prevents generating [1,2a] and [1,2b] as separate subsets
+            if i > start and nums[i] == nums[i - 1]:
+                continue
+
+            path.append(nums[i])
+            backtrack(i + 1, path)
+            path.pop()
+
+    backtrack()
+    return result
 
 
-def fibonacci(n: int) -> int:
+# ==============================================================================
+# PART 3: COMBINATIONS (Order doesn't matter, fixed size)
+# ==============================================================================
+
+
+def combinations_k_of_n(n, k):
     """
-    Calculate the Nth Fibonacci number using recursion.
+    Generate all combinations of k numbers from 1 to n.
+    C(n,k) = n!/(k!(n-k)!)
 
-    :param n: int - The position of the Fibonacci number to calculate.
-    :return: int - The Nth Fibonacci number.
+    Args:
+        n: Range of numbers (1 to n)
+        k: Size of each combination
+
+    Returns:
+        List of all k-combinations
+
+    Example:
+        combinations_k_of_n(4, 2) -> [[1,2], [1,3], [1,4], [2,3], [2,4], [3,4]]
+        combinations_k_of_n(3, 3) -> [[1,2,3]]
+
+    Time: O(C(n,k) * k) - C(n,k) combinations, each takes O(k) to copy
+    Space: O(C(n,k) * k) for storing results
     """
-    # TODO: Implement the function
-    pass
+    result = []
+
+    def backtrack(start=1, path=[]):
+        # Found a valid combination of size k
+        if len(path) == k:
+            result.append(path[:])
+            return
+
+        # Optimization: stop if not enough numbers left
+        remaining_needed = k - len(path)
+        remaining_available = n - start + 1
+        if remaining_needed > remaining_available:
+            return
+
+        for i in range(start, n + 1):
+            path.append(i)
+            backtrack(i + 1, path)
+            path.pop()
+
+    backtrack()
+    return result
 
 
-def print_all_subsequences(array: List[int]) -> List[List[int]]:
+def combinations_from_array(nums, k):
     """
-    Print all subsequences of a given array using recursion.
+    Generate all k-sized combinations from given array (no duplicates).
 
-    :param array: List[int] - The input array.
-    :return: List[List[int]] - A list of all subsequences.
+    Args:
+        nums: List of unique elements
+        k: Size of each combination
+
+    Returns:
+        List of all k-combinations
+
+    Example:
+        combinations_from_array([1,2,3,4], 2) -> [[1,2], [1,3], [1,4], [2,3], [2,4], [3,4]]
+        combinations_from_array(['a','b','c'], 2) -> [['a','b'], ['a','c'], ['b','c']]
+
+    Time: O(C(n,k) * k)
+    Space: O(C(n,k) * k)
     """
-    # TODO: Implement the function
-    pass
+    result = []
+    n = len(nums)
+
+    def backtrack(start=0, path=[]):
+        if len(path) == k:
+            result.append(path[:])
+            return
+
+        # Optimization: check if enough elements remain
+        if k - len(path) > n - start:
+            return
+
+        for i in range(start, n):
+            path.append(nums[i])
+            backtrack(i + 1, path)
+            path.pop()
+
+    backtrack()
+    return result
 
 
-def subsequences_with_sum_k(array: List[int], k: int) -> List[List[int]]:
+def combinations_with_duplicates(nums, k):
     """
-    Find all subsequences of a given array whose sum is K using recursion.
+    Generate all k-sized combinations when input contains duplicates.
 
-    :param array: List[int] - The input array.
-    :param k: int - The target sum.
-    :return: List[List[int]] - A list of subsequences whose sum is K.
+    Args:
+        nums: List of elements (may contain duplicates)
+        k: Size of each combination
+
+    Returns:
+        List of all unique k-combinations
+
+    Example:
+        combinations_with_duplicates([1,1,2], 2) -> [[1,1], [1,2]]
+        combinations_with_duplicates([1,2,2,3], 2) -> [[1,2], [1,3], [2,2], [2,3]]
+
+    Time: O(C(n,k) * k)
+    Space: O(C(n,k) * k)
     """
-    # TODO: Implement the function
-    pass
+    nums.sort()
+    result = []
+
+    def backtrack(start=0, path=[]):
+        if len(path) == k:
+            result.append(path[:])
+            return
+
+        for i in range(start, len(nums)):
+            # Skip duplicates at same level
+            if i > start and nums[i] == nums[i - 1]:
+                continue
+
+            path.append(nums[i])
+            backtrack(i + 1, path)
+            path.pop()
+
+    backtrack()
+    return result
 
 
-def count_subsequences_with_sum_k(array: List[int], k: int) -> int:
+# ==============================================================================
+# PART 4: COMBINATION SUM VARIANTS
+# ==============================================================================
+
+
+def combination_sum_unlimited_reuse(candidates, target):
     """
-    Count the number of subsequences of a given array whose sum is K using recursion.
+    Find all combinations that sum to target. Each number can be used unlimited times.
 
-    :param array: List[int] - The input array.
-    :param k: int - The target sum.
-    :return: int - The count of subsequences whose sum is K.
+    Args:
+        candidates: List of distinct positive integers
+        target: Target sum
+
+    Returns:
+        List of all combinations that sum to target
+
+    Example:
+        combination_sum_unlimited_reuse([2,3,6,7], 7) -> [[2,2,3], [7]]
+        combination_sum_unlimited_reuse([2,3,5], 8) -> [[2,2,2,2], [2,3,3], [3,5]]
+
+    Time: O(N^(T/M)) where N=len(candidates), T=target, M=minimal value
+    Space: O(T/M) for recursion depth
     """
-    # TODO: Implement the function
-    pass
+    result = []
+
+    def backtrack(start=0, path=[], current_sum=0):
+        if current_sum == target:
+            result.append(path[:])
+            return
+
+        if current_sum > target:
+            return
+
+        for i in range(start, len(candidates)):
+            path.append(candidates[i])
+            # Note: pass i (not i+1) to allow reuse
+            backtrack(i, path, current_sum + candidates[i])
+            path.pop()
+
+    backtrack()
+    return result
 
 
-def combination_sum(array: List[int], target: int) -> List[List[int]]:
+def combination_sum_no_reuse(candidates, target):
     """
-    Find all unique combinations in an array where the numbers sum to a target.
+    Find all combinations that sum to target. Each number used at most once.
+    Input may contain duplicates.
 
-    :param array: List[int] - The input array.
-    :param target: int - The target sum.
-    :return: List[List[int]] - A list of unique combinations.
+    Args:
+        candidates: List of positive integers (may have duplicates)
+        target: Target sum
+
+    Returns:
+        List of all unique combinations that sum to target
+
+    Example:
+        combination_sum_no_reuse([10,1,2,7,6,1,5], 8) -> [[1,1,6], [1,2,5], [1,7], [2,6]]
+        combination_sum_no_reuse([2,5,2,1,2], 5) -> [[1,2,2], [5]]
+
+    Time: O(2^n)
+    Space: O(n) for recursion
     """
-    # TODO: Implement the function
-    pass
+    candidates.sort()
+    result = []
+
+    def backtrack(start=0, path=[], current_sum=0):
+        if current_sum == target:
+            result.append(path[:])
+            return
+
+        for i in range(start, len(candidates)):
+            # Optimization: stop if current number exceeds remaining target
+            if candidates[i] > target - current_sum:
+                break
+
+            # Skip duplicates at same recursion level
+            if i > start and candidates[i] == candidates[i - 1]:
+                continue
+
+            path.append(candidates[i])
+            backtrack(i + 1, path, current_sum + candidates[i])
+            path.pop()
+
+    backtrack()
+    return result
 
 
-def all_permutations(array: List[int]) -> List[List[int]]:
+def combination_sum_fixed_k(k, n):
     """
-    Generate all permutations of a given array using recursion.
+    Find all combinations of k numbers from 1-9 that sum to n.
+    Each number used at most once.
 
-    :param array: List[int] - The input array.
-    :return: List[List[int]] - A list of all permutations.
+    Args:
+        k: Number of elements in each combination
+        n: Target sum
+
+    Returns:
+        List of all valid combinations
+
+    Example:
+        combination_sum_fixed_k(3, 7) -> [[1,2,4]]
+        combination_sum_fixed_k(3, 9) -> [[1,2,6], [1,3,5], [2,3,4]]
+
+    Time: O(C(9,k) * k)
+    Space: O(k) for recursion
     """
-    # TODO: Implement the function
-    pass
+    result = []
+
+    def backtrack(start=1, path=[], current_sum=0):
+        # Check if we have k numbers
+        if len(path) == k:
+            if current_sum == n:
+                result.append(path[:])
+            return
+
+        # Optimization: check if remaining sum is achievable
+        remaining_slots = k - len(path)
+        min_possible = sum(range(start, start + remaining_slots))
+        max_possible = sum(range(10 - remaining_slots, 10))
+
+        if current_sum + min_possible > n or current_sum + max_possible < n:
+            return
+
+        for i in range(start, 10):
+            if current_sum + i > n:  # Optimization: early termination
+                break
+
+            path.append(i)
+            backtrack(i + 1, path, current_sum + i)
+            path.pop()
+
+    backtrack()
+    return result
+
+
+# ==============================================================================
+# PART 5: PERMUTATIONS (Order matters, all elements used)
+# ==============================================================================
+
+
+def permutations_no_duplicates(nums):
+    """
+    Generate all permutations of unique elements.
+    n! permutations for n elements.
+
+    Args:
+        nums: List of unique elements
+
+    Returns:
+        List of all permutations
+
+    Example:
+        permutations_no_duplicates([1,2,3]) -> [[1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]]
+        permutations_no_duplicates([1,2]) -> [[1,2], [2,1]]
+
+    Time: O(n! * n) - n! permutations, each takes O(n) to copy
+    Space: O(n! * n) for storing results
+    """
+    result = []
+    used = [False] * len(nums)
+
+    def backtrack(path=[]):
+        # Found a complete permutation
+        if len(path) == len(nums):
+            result.append(path[:])
+            return
+
+        for i in range(len(nums)):
+            if used[i]:
+                continue
+
+            used[i] = True
+            path.append(nums[i])
+            backtrack(path)
+            path.pop()
+            used[i] = False
+
+    backtrack()
+    return result
+
+
+def permutations_with_duplicates(nums):
+    """
+    Generate all unique permutations when input contains duplicates.
+    Key: Sort array and ensure we don't use duplicate elements out of order.
+
+    Args:
+        nums: List of elements (may contain duplicates)
+
+    Returns:
+        List of all unique permutations
+
+    Example:
+        permutations_with_duplicates([1,1,2]) -> [[1,1,2], [1,2,1], [2,1,1]]
+        permutations_with_duplicates([1,2,2]) -> [[1,2,2], [2,1,2], [2,2,1]]
+
+    Time: O(n! * n) in worst case (all unique)
+    Space: O(n! * n)
+    """
+    nums.sort()
+    result = []
+    used = [False] * len(nums)
+
+    def backtrack(path=[]):
+        if len(path) == len(nums):
+            result.append(path[:])
+            return
+
+        for i in range(len(nums)):
+            if used[i]:
+                continue
+
+            # Skip duplicate: if previous duplicate not used, don't use current
+            # This ensures we only use duplicates in order
+            if i > 0 and nums[i] == nums[i - 1] and not used[i - 1]:
+                continue
+
+            used[i] = True
+            path.append(nums[i])
+            backtrack(path)
+            path.pop()
+            used[i] = False
+
+    backtrack()
+    return result
+
+
+def permutations_k_of_n(n, k):
+    """
+    Generate all k-permutations of numbers 1 to n.
+    P(n,k) = n!/(n-k)!
+
+    Args:
+        n: Range of numbers (1 to n)
+        k: Size of each permutation
+
+    Returns:
+        List of all k-permutations
+
+    Example:
+        permutations_k_of_n(3, 2) -> [[1,2], [1,3], [2,1], [2,3], [3,1], [3,2]]
+        permutations_k_of_n(4, 1) -> [[1], [2], [3], [4]]
+
+    Time: O(P(n,k) * k)
+    Space: O(P(n,k) * k)
+    """
+    result = []
+    used = [False] * (n + 1)
+
+    def backtrack(path=[]):
+        if len(path) == k:
+            result.append(path[:])
+            return
+
+        for i in range(1, n + 1):
+            if used[i]:
+                continue
+
+            used[i] = True
+            path.append(i)
+            backtrack(path)
+            path.pop()
+            used[i] = False
+
+    backtrack()
+    return result
+
+
+# ==============================================================================
+# PART 6: SUBSEQUENCES (Order matters from original array)
+# ==============================================================================
+
+
+def all_subsequences(nums):
+    """
+    Generate all subsequences (maintain relative order from original array).
+    A subsequence maintains the relative order but doesn't need to be contiguous.
+
+    Args:
+        nums: List of elements
+
+    Returns:
+        List of all subsequences
+
+    Example:
+        all_subsequences([1,2,3]) -> [[], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]]
+        all_subsequences([1,2]) -> [[], [1], [1,2], [2]]
+
+    Time: O(2^n * n)
+    Space: O(2^n * n)
+    """
+    result = []
+
+    def backtrack(index=0, path=[]):
+        # Can record solution at any point (any length is valid)
+        result.append(path[:])
+
+        # Try including each remaining element
+        for i in range(index, len(nums)):
+            path.append(nums[i])
+            backtrack(i + 1, path)  # Move forward to maintain order
+            path.pop()
+
+    backtrack()
+    return result
+
+
+def increasing_subsequences(nums):
+    """
+    Find all increasing subsequences of length >= 2.
+    Must maintain relative order and be non-decreasing.
+
+    Args:
+        nums: List of integers (may have duplicates)
+
+    Returns:
+        List of all increasing subsequences
+
+    Example:
+        increasing_subsequences([4,6,7,7]) -> [[4,6], [4,6,7], [4,6,7,7], [4,7], [4,7,7], [6,7], [6,7,7], [7,7]]
+        increasing_subsequences([4,4,3,2,1]) -> [[4,4]]
+
+    Time: O(2^n * n)
+    Space: O(2^n * n)
+    """
+    result = []
+
+    def backtrack(start=0, path=[]):
+        if len(path) >= 2:
+            result.append(path[:])
+
+        # Use set to track used values at current level (avoid duplicates)
+        used = set()
+
+        for i in range(start, len(nums)):
+            # Skip if doesn't maintain increasing order
+            if path and nums[i] < path[-1]:
+                continue
+
+            # Skip duplicates at same recursion level
+            if nums[i] in used:
+                continue
+
+            used.add(nums[i])
+            path.append(nums[i])
+            backtrack(i + 1, path)
+            path.pop()
+
+    backtrack()
+    return result
+
+
+# ==============================================================================
+# PART 7: SPECIAL PROBLEMS
+# ==============================================================================
+
+
+def palindrome_partitioning(s):
+    """
+    Partition string into palindromic substrings.
+
+    Args:
+        s: Input string
+
+    Returns:
+        List of all palindromic partitions
+
+    Example:
+        palindrome_partitioning("aab") -> [["a","a","b"], ["aa","b"]]
+        palindrome_partitioning("aba") -> [["a","b","a"], ["aba"]]
+
+    Time: O(n * 2^n) - 2^n partitions, each needs O(n) palindrome checks
+    Space: O(n * 2^n)
+    """
+    result = []
+
+    def is_palindrome(substr):
+        return substr == substr[::-1]
+
+    def backtrack(start=0, path=[]):
+        # Complete partition of entire string
+        if start == len(s):
+            result.append(path[:])
+            return
+
+        # Try all possible end positions
+        for end in range(start + 1, len(s) + 1):
+            substring = s[start:end]
+            if is_palindrome(substring):
+                path.append(substring)
+                backtrack(end, path)
+                path.pop()
+
+    backtrack()
+    return result
+
+
+def letter_combinations(digits):
+    """
+    Generate all letter combinations from phone number.
+
+    Args:
+        digits: String of digits 2-9
+
+    Returns:
+        List of all letter combinations
+
+    Example:
+        letter_combinations("23") -> ["ad","ae","af","bd","be","bf","cd","ce","cf"]
+        letter_combinations("2") -> ["a","b","c"]
+
+    Time: O(4^n * n) - worst case all digits map to 4 letters
+    Space: O(4^n * n)
+    """
+    if not digits:
+        return []
+
+    phone = {
+        "2": "abc",
+        "3": "def",
+        "4": "ghi",
+        "5": "jkl",
+        "6": "mno",
+        "7": "pqrs",
+        "8": "tuv",
+        "9": "wxyz",
+    }
+    result = []
+
+    def backtrack(index=0, path=[]):
+        if index == len(digits):
+            result.append("".join(path))
+            return
+
+        for letter in phone[digits[index]]:
+            path.append(letter)
+            backtrack(index + 1, path)
+            path.pop()
+
+    backtrack()
+    return result
+
+
+def generate_parentheses(n):
+    """
+    Generate all valid combinations of n pairs of parentheses.
+
+    Args:
+        n: Number of parentheses pairs
+
+    Returns:
+        List of all valid combinations
+
+    Example:
+        generate_parentheses(2) -> ["(())", "()()"]
+        generate_parentheses(3) -> ["((()))", "(()())", "(())()", "()(())", "()()()"]
+
+    Time: O(4^n / sqrt(n)) - Catalan number
+    Space: O(4^n / sqrt(n))
+    """
+    result = []
+
+    def backtrack(path=[], open_count=0, close_count=0):
+        # Found valid combination
+        if len(path) == 2 * n:
+            result.append("".join(path))
+            return
+
+        # Can add opening parenthesis if we haven't used all
+        if open_count < n:
+            path.append("(")
+            backtrack(path, open_count + 1, close_count)
+            path.pop()
+
+        # Can add closing parenthesis if it won't make invalid
+        if close_count < open_count:
+            path.append(")")
+            backtrack(path, open_count, close_count + 1)
+            path.pop()
+
+    backtrack()
+    return result
+
+
+# ==============================================================================
+# MAIN TEST SUITE
+# ==============================================================================
+
+
+def run_tests():
+    """Run comprehensive tests for all functions."""
+
+    print("=" * 80)
+    print("BACKTRACKING AND RECURSION TEST SUITE")
+    print("=" * 80)
+
+    # Test 1: Binary strings
+    print("\n1. Binary Strings Generation:")
+    print(f"   n=2: {generate_binary_strings(2)}")
+    print(f"   n=3: {generate_binary_strings(3)}")
+
+    # Test 2: Grid paths
+    print("\n2. Grid Path Counting:")
+    print(f"   2x2 grid: {count_paths_in_grid(2, 2)} paths")
+    print(f"   3x3 grid: {count_paths_in_grid(3, 3)} paths")
+
+    # Test 3: Subsets without duplicates
+    print("\n3. Subsets (No Duplicates):")
+    test_array = [1, 2, 3]
+    print(f"   Array: {test_array}")
+    print(f"   Version 1 (include/exclude): {subsets_no_duplicates_v1(test_array)}")
+    print(
+        f"   Version 2 (choose from remaining): {subsets_no_duplicates_v2(test_array)}"
+    )
+
+    # Test 4: Subsets with duplicates
+    print("\n4. Subsets (With Duplicates):")
+    test_array_dup = [1, 2, 2]
+    print(f"   Array: {test_array_dup}")
+    print(f"   Result: {subsets_with_duplicates(test_array_dup)}")
+
+    test_array_dup2 = [4, 4, 4, 1, 4]
+    print(f"   Array: {test_array_dup2}")
+    print(f"   Result: {subsets_with_duplicates(test_array_dup2)}")
+
+    # Test 5: Combinations
+    print("\n5. Combinations (Fixed Size):")
+    print(f"   C(4,2): {combinations_k_of_n(4, 2)}")
+    print(f"   From array [1,2,3,4], k=2: {combinations_from_array([1,2,3,4], 2)}")
+    print(
+        f"   With duplicates [1,1,2], k=2: {combinations_with_duplicates([1,1,2], 2)}"
+    )
+
+    # Test 6: Combination sum variants
+    print("\n6. Combination Sum Variants:")
+    print(f"   Unlimited reuse, candidates=[2,3,6,7], target=7:")
+    print(f"   {combination_sum_unlimited_reuse([2,3,6,7], 7)}")
+
+    print(f"   No reuse, candidates=[10,1,2,7,6,1,5], target=8:")
+    print(f"   {combination_sum_no_reuse([10,1,2,7,6,1,5], 8)}")
+
+    print(f"   Fixed k=3, sum=9 from 1-9:")
+    print(f"   {combination_sum_fixed_k(3, 9)}")
+
+    # Test 7: Permutations without duplicates
+    print("\n7. Permutations (No Duplicates):")
+    test_perm = [1, 2, 3]
+    print(f"   Array: {test_perm}")
+    print(f"   Result: {permutations_no_duplicates(test_perm)}")
+
+    # Test 8: Permutations with duplicates
+    print("\n8. Permutations (With Duplicates):")
+    test_perm_dup = [1, 1, 2]
+    print(f"   Array: {test_perm_dup}")
+    print(f"   Result: {permutations_with_duplicates(test_perm_dup)}")
+
+    # Test 9: K-Permutations
+    print("\n9. K-Permutations:")
+    print(f"   P(3,2): {permutations_k_of_n(3, 2)}")
+
+    # Test 10: Subsequences
+    print("\n10. Subsequences:")
+    test_subseq = [1, 2, 3]
+    print(f"   All subsequences of {test_subseq}: {all_subsequences(test_subseq)}")
+
+    test_increasing = [4, 6, 7, 7]
+    print(f"   Increasing subsequences of {test_increasing}:")
+    print(f"   {increasing_subsequences(test_increasing)}")
+
+    # Test 11: Special problems
+    print("\n11. Special Problems:")
+
+    print(f"   Palindrome partitions of 'aab': {palindrome_partitioning('aab')}")
+
+    print(f"   Phone letter combinations of '23': {letter_combinations('23')}")
+
+    print(f"   Valid parentheses for n=2: {generate_parentheses(2)}")
+
+    print("\n" + "=" * 80)
+    print("TEST SUITE COMPLETED")
+    print("=" * 80)
+
+
+def run_performance_analysis():
+    """Analyze and compare performance characteristics."""
+
+    print("\n" + "=" * 80)
+    print("PERFORMANCE ANALYSIS")
+    print("=" * 80)
+
+    print("\nTime Complexity Summary:")
+    print("-" * 40)
+
+    complexities = [
+        (
+            "Subsets/Subsequences",
+            "O(2^n * n)",
+            "2^n possible subsets, O(n) to copy each",
+        ),
+        ("Permutations", "O(n! * n)", "n! permutations, O(n) to copy each"),
+        (
+            "Combinations C(n,k)",
+            "O(C(n,k) * k)",
+            "C(n,k) combinations, O(k) to copy each",
+        ),
+        ("Combination Sum", "O(N^(T/M))", "N=candidates, T=target, M=min value"),
+        (
+            "Palindrome Partition",
+            "O(n * 2^n)",
+            "2^n partitions, O(n) palindrome checks",
+        ),
+        ("Phone Combinations", "O(4^n * n)", "Up to 4 letters per digit"),
+        ("Generate Parentheses", "O(4^n/√n)", "Catalan number C_n"),
+    ]
+
+    for name, complexity, explanation in complexities:
+        print(f"{name:25} {complexity:15} - {explanation}")
+
+    print("\nSpace Complexity Patterns:")
+    print("-" * 40)
+    print("1. Result storage dominates: O(output_size)")
+    print("2. Recursion depth: O(n) for most problems")
+    print("3. Used/visited arrays: O(n) additional space")
+    print("4. Can optimize with iterative approaches or generators")
+
+    print("\nOptimization Techniques:")
+    print("-" * 40)
+    print("1. Pruning: Stop exploring invalid branches early")
+    print("2. Sorting for duplicates: Group identical elements")
+    print("3. Mathematical bounds: Calculate if target is achievable")
+    print("4. Memoization: Cache results for overlapping subproblems")
+    print("5. Iterative generation: Avoid recursion overhead")
 
 
 if __name__ == "__main__":
-    # Test cases
-    print("Test cases for recursion problems")
+    # Run all tests
+    run_tests()
 
-    # Problem 1: Print Name N Times
-    print_name_n_times(5, "Alice")
+    # Run performance analysis
+    run_performance_analysis()
 
-    # Problem 2: Sum of First N Numbers
-    print("Sum of first 5 numbers:", sum_of_first_n(5))
+    # Interactive demonstration
+    print("\n" + "=" * 80)
+    print("INTERACTIVE DEMONSTRATION")
+    print("=" * 80)
 
-    # Problem 3: Factorial of a Number
-    print("Factorial of 5:", factorial(5))
-
-    # Problem 4: Reverse an Array
-    print("Reversed array:", reverse_array([1, 2, 3, 4, 5]))
-
-    # Problem 5: Check Palindrome
-    print("Is 'racecar' a palindrome?", is_palindrome("racecar"))
-
-    # Problem 6: Fibonacci Number
-    print("5th Fibonacci number:", fibonacci(5))
-
-    # Problem 7: Print All Subsequences
-    print("All subsequences:", print_all_subsequences([1, 2, 3]))
-
-    # Problem 8: Subsequence with Sum K
-    print("Subsequences with sum 5:", subsequences_with_sum_k([1, 2, 3, 4], 5))
-
-    # Problem 9: Count Subsequences with Sum K
-    print(
-        "Count of subsequences with sum 5:",
-        count_subsequences_with_sum_k([1, 2, 3, 4], 5),
-    )
-
-    # Problem 10: Combination Sum
-    print("Combination sum:", combination_sum([2, 3, 6, 7], 7))
-
-    # Problem 11: All Permutations
-    print("All permutations:", all_permutations([1, 2, 3]))
+    print("\nYou can now experiment with any function.")
+    print("Example usage:")
+    print("  >>> subsets_no_duplicates_v1([1, 2, 3])")
+    print("  >>> permutations_with_duplicates([1, 1, 2])")
+    print("  >>> combination_sum_unlimited_reuse([2, 3, 5], 8)")
