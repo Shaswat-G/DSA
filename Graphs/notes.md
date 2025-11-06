@@ -437,3 +437,26 @@ By understanding the properties of the graph and the requirements of the problem
 
 
 
+## Minimum Cost Spanning Tree (MST)
+A Minimum Spanning Tree (MST) of a connected, undirected graph is a subgraph (subset of the edges) that connects ALL the vertices together without any cycles and with the minimum possible total edge weight. MSTs are widely used in network design, clustering, and other applications where a minimal connection cost is desired.
+=> Graph must be connected and undirected.
+
+**Properties of MST**:
+1. Vertex Count: An MST with V vertices has exactly V-1 edges.
+2. Uniqueness: If all edge weights are distinct, the MST is unique.
+3. Cycle Property: Any cycle in the graph must have at least one edge not in the MST.
+4. Cut Property: For any cut in the graph, the minimum weight edge crossing the cut is part of the MST.
+
+Algos for MST by problem type:
+Greedy Methods:
+- **Kruskal's Algorithm**: Suitable for sparse graphs. Sort edges by weight and add them one by one, ensuring no cycles (using Union-Find). The main question is how do you detect programmatically if adding an edge will form a cycle. He conceptually uses Disjoint Subsets implemented via Union-Find data structure. To find the min weight edge, we can use a heap/priority queue. If the graph is disconnected, Kruskal's will find a Minimum Spanning Forest (MSF) - i.e., a collection of MSTs for each connected component.
+
+
+Vertices connected with edges form a set. If we select an edge that connects two vertices from different sets, we can safely add it to the MST without forming a cycle. We then merge the two sets into one. If the edge connects vertices within the same set, adding it would create a cycle, so we skip it.
+
+- **Prim's Algorithm**: Suitable for dense graphs. Start from an arbitrary vertex and grow the MST by adding the smallest edge that connects a vertex in the MST to a vertex outside the MST.
+Prim does not require sorting all edges upfront. Instead, it uses a priority queue to efficiently select the next minimum weight edge connecting the MST to a new vertex.
+Prim does not work on disconnected graphs as it only grows the MST from a single starting vertex. To handle disconnected graphs, Prim's algorithm would need to be run separately on each connected component.
+
+What are greedy algorithms?
+Greedy algorithms build up a solution piece by piece, always choosing the next piece that offers the most immediate benefit. They make a series of choices, each of which looks best at the moment, without considering the global consequences. Greedy algorithms are often used for optimization problems where local optimal choices lead to a global optimum.
