@@ -4,4 +4,4 @@
 
 3. For dp on sebsequences, we aready know the steps.
 3.1 Express everything in terms of a state (index, target)
-3.2 The possible directionf of explorations are always take or not take the current element. (include vs exclude)
+3.2 The possible direction of explorations are always take or not take the current element. (include vs exclude)
