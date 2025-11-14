@@ -495,3 +495,6 @@ _Recursion Use:_ Each call checks constraints before recursing (e.g., N-Queens, 
 _This list covers all classic and modern recursion-based problems. If a problem can be defined in terms of smaller subproblems, involves exploring all possibilities, or has a natural divide-and-conquer structure, think of recursion!_
 
 ---
+
+
+## Recursion on Subsets, Subsequences, and Combinations
