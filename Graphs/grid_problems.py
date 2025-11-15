@@ -1,7 +1,10 @@
 from collections import deque
 from typing import Tuple, List
 
-def bfs_shortest_path(start, end, grid, obstacle_value = 100) -> Tuple[int, List[Tuple[int, int]]]:
+
+def bfs_shortest_path(
+    start, end, grid, obstacle_value=100
+) -> Tuple[int, List[Tuple[int, int]]]:
 
     # We keep track of (row, col, distance) in queue.
     # We keep track of parents in a dictionary (row, col) : (parent_row, parent_col)
@@ -17,7 +20,9 @@ def bfs_shortest_path(start, end, grid, obstacle_value = 100) -> Tuple[int, List
     if not grid or not grid[0]:
         return -1, []
 
-    if not is_valid_gridsquare(start_row, start_col, grid, obstacle_value) or not is_valid_gridsquare(end_row, end_col, grid, obstacle_value):
+    if not is_valid_gridsquare(
+        start_row, start_col, grid, obstacle_value
+    ) or not is_valid_gridsquare(end_row, end_col, grid, obstacle_value):
         return -1, []
 
     if start == end:
@@ -42,16 +47,16 @@ def bfs_shortest_path(start, end, grid, obstacle_value = 100) -> Tuple[int, List
                 path.append(current)
                 current = parent[current]
 
-            return dist, path[::-1] # reverse path
+            return dist, path[::-1]  # reverse path
 
         # Did not reach End
         for new_row, new_col in get_valid_neighbors(cur_row, cur_col, grid):
             if (new_row, new_col) not in visited:
-                q.append((new_row, new_col, dist+1))
+                q.append((new_row, new_col, dist + 1))
                 visited.add((new_row, new_col))
                 parent[(new_row, new_col)] = (cur_row, cur_col)
 
-    return -1, [] # No path was found
+    return -1, []  # No path was found
 
 
 def level_order_bfs(grid, start):
@@ -60,56 +65,69 @@ def level_order_bfs(grid, start):
     visited = set()
     q = deque([start])
     visited.add(start)
-    
+
     levels = []
     level = 0
-    
+
     while q:
         level_size = len(q)
         current_level = []
-        
+
         for _ in range(level_size):
             current = q.popleft()
             current_level.append(current)
-            
+
             for nn in get_valid_neighbors(current[0], current[1], grid):
                 if nn not in visited:
                     q.append(nn)
                     visited.add(nn)
-                    
+
         levels.append((level, current_level))
-        level+=1
+        level += 1
 
 
 # Neighbor generation helper functions
 
-def get_valid_neighbors(row : int, col : int, grid : List[List[int]], include_diagonals : bool = False) -> List[Tuple[int,int]]:
+
+def get_valid_neighbors(
+    row: int, col: int, grid: List[List[int]], include_diagonals: bool = False
+) -> List[Tuple[int, int]]:
     neighbors = []
-    directions = [(1,0), (-1,0), (0,1), (0,-1)]
+    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
     if include_diagonals:
-        directions = [(1, 0), (-1, 0), (0, 1), (0, -1), (1,1), (-1,1), (1,-1), (-1,-1)]
-        
+        directions = [
+            (1, 0),
+            (-1, 0),
+            (0, 1),
+            (0, -1),
+            (1, 1),
+            (-1, 1),
+            (1, -1),
+            (-1, -1),
+        ]
+
     for dr, dc in directions:
         new_row, new_col = row + dr, col + dc
         if is_valid_gridsquare(new_row, new_col, grid):
             neighbors.append((new_row, new_col))
-        
+
     return neighbors
 
-def is_valid_gridsquare(row : int, col : int, grid : List[List[int]], obstacle_value : int = 100) -> bool:
+
+def is_valid_gridsquare(
+    row: int, col: int, grid: List[List[int]], obstacle_value: int = 100
+) -> bool:
     rows, cols = len(grid), len(grid[0])
-    is_valid = (0<= row < rows) and (0<= col < cols) and (grid[row][col]!=obstacle_value)
-    
+    is_valid = (
+        (0 <= row < rows) and (0 <= col < cols) and (grid[row][col] != obstacle_value)
+    )
+
     return is_valid
 
 
 def main():
-    grid = [
-        [1, 0, 1], 
-        [1, 1, 0], 
-        [0, 1, 1]
-            ]
+    grid = [[1, 0, 1], [1, 1, 0], [0, 1, 1]]
 
     print("4-way neighbors of (1,1):", get_valid_neighbors(1, 1, grid))
     print(

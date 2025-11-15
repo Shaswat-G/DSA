@@ -173,7 +173,7 @@ Problems like "Number of Islands" can be solved using BFS/DFS on a grid by treat
 - **Parallel edges:** Allowed in multigraphs, not in simple graphs.
 - **Acyclic:** No cycles.
 - **Tree:** Connected, acyclic, V-1 edges.
-- **Bipartite:** No odd cycles.
+- **Bipartite:** No odd cycles. The vertex set is partionable into two disjoint sets, where no two graph vertices within the same set are adjacent.
 - **DAG:** Topological sort possible.
 - **Articulation point/bridge:** Removal increases #components.
 - **Eulerian Path/Circuit:** All vertices even degree (circuit), exactly two odd (path).
@@ -184,7 +184,8 @@ Problems like "Number of Islands" can be solved using BFS/DFS on a grid by treat
 ### A. Traversal & Search
 
 - **Connected Components**
-  - _Idea:_ Use BFS/DFS to mark all nodes in a component. Repeat for all unvisited nodes.
+  - _Idea:_ Each traversal visits all nodes in that connected components. Use BFS/DFS to mark all nodes in a component. Repeat for all unvisited nodes. The number of times you start a new traversal is the number of connected components. To count distinct islands keep track of the BFS sequence in a set
+  - and compare a new BFS sequence with the set to check if it's a new island or not.
   - _When to use:_ Find number of islands, clusters, or groups.
 - **Path Existence**
   - _Idea:_ Use BFS/DFS to check if a path exists between two nodes.
@@ -288,3 +289,174 @@ Problems like "Number of Islands" can be solved using BFS/DFS on a grid by treat
 ---
 
 This guide covers theory, formulas, and practical DSA implementations for graphs. Use it for MCQs, interviews, and coding!
+
+
+**Toplogical Sort**
+Producing a linear ordering of vertices for a DAG such that for every directed edge u → v, vertex u comes before v in the ordering. This ordering is not unique; multiple valid orderings may exist for a given DAG.
+
+For connected components, we can run BFS/DFS from each unvisited node to ensure all components are checked.
+
+**Eventual Safe States**
+In a directed graph, a node is considered "safe" if every possible path starting from that node leads to a terminal node (a node with no outgoing edges). The goal is to find all such safe nodes in the graph. Can be done using DFS with cycle detection or reverse graph + topological sort.
+
+# study cycle detection in directed graps using DFS and then BFS (Kahn's Algorithm). 
+
+
+Shortest path in unweighted graph can be found using standard BFS.
+
+shortest path in weighted graph can be found using Dijkstra's algorithm. (with or without cycles).
+
+Shotest path in weighted DAG can be found using topological sort followed by edge relaxation.
+
+## Shortest Path Problems in Graphs
+
+Shortest path problems involve finding the minimum distance or cost to travel between two nodes in a graph. The choice of algorithm depends on the graph's properties, such as whether it is directed or undirected, weighted or unweighted, and whether it contains cycles. Below is a detailed breakdown of the variants and the algorithms used to solve them.
+
+### 1. Unweighted Graphs
+
+#### Directed and Undirected Graphs
+- **Algorithm**: Breadth-First Search (BFS)
+- **Why BFS?**
+  - BFS explores all nodes at the current distance before moving to the next level.
+  - In unweighted graphs, the shortest path is determined by the number of edges, making BFS optimal.
+- **Key Intuition**:
+  - BFS guarantees that the first time a node is visited, it is reached via the shortest path.
+- **Complexity**: O(V + E), where V is the number of vertices and E is the number of edges.
+
+### 2. Weighted Graphs
+
+#### Without Negative Weights
+- **Algorithm**: Dijkstra's Algorithm
+- **Why Dijkstra's?**
+  - Dijkstra's algorithm uses a priority queue to always expand the shortest known path first.
+  - It works efficiently when all edge weights are non-negative.
+- **Key Intuition**:
+  - The algorithm maintains a "visited" set and a "distance" array. Once a node is processed, its shortest distance is finalized.
+- **Complexity**: O((V + E) log V) with a priority queue.
+
+#### With Negative Weights (No Negative Cycles)
+- **Algorithm**: Bellman-Ford Algorithm
+- **Why Bellman-Ford?**
+  - Bellman-Ford relaxes all edges repeatedly, ensuring that even paths with negative weights are considered.
+  - It can detect negative weight cycles.
+- **Key Intuition**:
+  - The algorithm iteratively improves the shortest path estimate for each edge.
+- **Complexity**: O(VE)
+
+#### With Negative Cycles
+- **Algorithm**: Bellman-Ford (to detect negative cycles)
+- **Why Not Dijkstra's?**
+  - Dijkstra's algorithm fails with negative weights because it assumes that once a node is processed, its shortest distance is finalized, which is not true with negative cycles.
+- **Key Intuition**:
+  - Negative cycles allow infinite reductions in path cost, making the shortest path undefined.
+
+### 3. Directed Acyclic Graphs (DAGs)
+
+#### Weighted DAGs
+- **Algorithm**: Topological Sort + Edge Relaxation
+- **Why Topological Sort?**
+  - In a DAG, topological sorting provides a linear order of vertices, ensuring that all edges are processed in the correct order.
+  - This allows edge relaxation to be performed in a single pass.
+- **Key Intuition**:
+  - The absence of cycles ensures that once a node is processed, its shortest distance is finalized.
+- **Complexity**: O(V + E)
+
+### 4. Graphs with Cycles
+
+#### Positive Weight Cycles
+- **Algorithm**: Dijkstra's Algorithm (if no negative weights)
+- **Why Dijkstra's?**
+  - Positive weight cycles do not affect the correctness of Dijkstra's algorithm.
+
+#### Negative Weight Cycles
+- **Algorithm**: Bellman-Ford (to detect cycles)
+- **Why Bellman-Ford?**
+  - Negative weight cycles make the shortest path undefined, and Bellman-Ford can detect such cycles.
+
+### 5. All-Pairs Shortest Path
+
+#### Unweighted Graphs
+- **Algorithm**: BFS for each node
+- **Complexity**: O(V(V + E))
+
+#### Weighted Graphs (No Negative Weights)
+- **Algorithm**: Dijkstra's Algorithm for each node
+- **Complexity**: O(V(V + E) log V)
+
+#### Weighted Graphs (With Negative Weights)
+- **Algorithm**: Floyd-Warshall Algorithm
+- **Why Floyd-Warshall?**
+  - Floyd-Warshall uses dynamic programming to compute shortest paths between all pairs of nodes.
+  - It handles negative weights but not negative cycles.
+- **Key Intuition**:
+  - The algorithm iteratively considers whether a path through an intermediate node is shorter.
+- **Complexity**: O(V³)
+
+### 6. Special Cases
+
+#### Single Source to All Nodes
+- **Unweighted Graphs**: BFS
+- **Weighted Graphs (No Negative Weights)**: Dijkstra's Algorithm
+- **Weighted Graphs (With Negative Weights)**: Bellman-Ford Algorithm
+
+#### Single Pair Shortest Path
+- **Unweighted Graphs**: BFS
+- **Weighted Graphs (No Negative Weights)**: Dijkstra's Algorithm
+- **Weighted Graphs (With Negative Weights)**: Bellman-Ford Algorithm
+
+#### Multi-Source Shortest Path
+- **Algorithm**: Multi-Source BFS
+- **Why Multi-Source BFS?**
+  - BFS can be initialized with multiple sources, treating them as a single virtual source.
+
+### Summary Table
+| Graph Type                | Algorithm                  | Complexity       |
+|---------------------------|----------------------------|------------------|
+| Unweighted                | BFS                        | O(V + E)         |
+| Weighted (No Negatives)   | Dijkstra's                | O((V + E) log V) |
+| Weighted (With Negatives) | Bellman-Ford              | O(VE)            |
+| Weighted DAG              | Topological Sort + Relax  | O(V + E)         |
+| All-Pairs (No Negatives)  | Dijkstra's for each node  | O(V(V + E) log V)|
+| All-Pairs (With Negatives)| Floyd-Warshall            | O(V³)            |
+
+### Choosing the Right Algorithm
+1. **Unweighted Graphs**:
+   - Use BFS for its simplicity and efficiency.
+2. **Weighted Graphs**:
+   - Use Dijkstra's if all weights are non-negative.
+   - Use Bellman-Ford if negative weights are present.
+3. **DAGs**:
+   - Use Topological Sort + Edge Relaxation for its linear complexity.
+4. **All-Pairs Shortest Path**:
+   - Use Floyd-Warshall for dense graphs or graphs with negative weights.
+   - Use Dijkstra's for sparse graphs with non-negative weights.
+5. **Graphs with Cycles**:
+   - Use Bellman-Ford to detect negative cycles.
+
+By understanding the properties of the graph and the requirements of the problem, you can select the most appropriate algorithm for finding the shortest path.
+
+
+
+## Minimum Cost Spanning Tree (MST)
+A Minimum Spanning Tree (MST) of a connected, undirected graph is a subgraph (subset of the edges) that connects ALL the vertices together without any cycles and with the minimum possible total edge weight. MSTs are widely used in network design, clustering, and other applications where a minimal connection cost is desired.
+=> Graph must be connected and undirected.
+
+**Properties of MST**:
+1. Vertex Count: An MST with V vertices has exactly V-1 edges.
+2. Uniqueness: If all edge weights are distinct, the MST is unique.
+3. Cycle Property: Any cycle in the graph must have at least one edge not in the MST.
+4. Cut Property: For any cut in the graph, the minimum weight edge crossing the cut is part of the MST.
+
+Algos for MST by problem type:
+Greedy Methods:
+- **Kruskal's Algorithm**: Suitable for sparse graphs. Sort edges by weight and add them one by one, ensuring no cycles (using Union-Find). The main question is how do you detect programmatically if adding an edge will form a cycle. He conceptually uses Disjoint Subsets implemented via Union-Find data structure. To find the min weight edge, we can use a heap/priority queue. If the graph is disconnected, Kruskal's will find a Minimum Spanning Forest (MSF) - i.e., a collection of MSTs for each connected component.
+
+
+Vertices connected with edges form a set. If we select an edge that connects two vertices from different sets, we can safely add it to the MST without forming a cycle. We then merge the two sets into one. If the edge connects vertices within the same set, adding it would create a cycle, so we skip it.
+
+- **Prim's Algorithm**: Suitable for dense graphs. Start from an arbitrary vertex and grow the MST by adding the smallest edge that connects a vertex in the MST to a vertex outside the MST.
+Prim does not require sorting all edges upfront. Instead, it uses a priority queue to efficiently select the next minimum weight edge connecting the MST to a new vertex.
+Prim does not work on disconnected graphs as it only grows the MST from a single starting vertex. To handle disconnected graphs, Prim's algorithm would need to be run separately on each connected component.
+
+What are greedy algorithms?
+Greedy algorithms build up a solution piece by piece, always choosing the next piece that offers the most immediate benefit. They make a series of choices, each of which looks best at the moment, without considering the global consequences. Greedy algorithms are often used for optimization problems where local optimal choices lead to a global optimum.
